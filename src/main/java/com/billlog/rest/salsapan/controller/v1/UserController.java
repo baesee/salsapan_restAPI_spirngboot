@@ -110,7 +110,7 @@ public class UserController {
                                        @ApiParam(value = "수정할 회원정보 Object", required = true) SalsaUser user,
                                        @RequestParam(value="files", required = false) MultipartFile[] files) {
 
-        System.err.println("mmmmmmmmmmmmmmmm");
+        System.err.println("mmmmmmmmmmmmmmmm!!!");
         //유저 인덱스 번호(유저 고유정보)가 없을 경우 유저를 찾을수 없다는 에러 발생
         if("".equals(user.getUser_idx())){
             throw new CUserNotFoundException();
