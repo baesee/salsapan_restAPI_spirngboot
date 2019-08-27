@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Salsapan E-mail 인증페이지</title>
+</head>
+<body>
+
+<div th:if="${authType} == 'Y'">
+    <img src="/images/emailAuthSuccess.png"/>
+</div>
+<div th:if="${authType} == 'N'">
+    <img src="/images/emailAuthFail.png"/>
+</div>
+</body>
+</html>

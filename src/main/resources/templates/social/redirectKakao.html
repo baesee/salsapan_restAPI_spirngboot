@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>redirect Kakao</title>
+</head>
+<body>
+<h1>redirect Kakao 페이지</h1>
+authInfo : <span th:text="${authInfo}"></span><br/>
+
+access_token : <span th:text="${authInfo.access_token}"></span><br/>
+token_type : <span th:text="${authInfo.token_type}"></span><br/>
+refresh_token : <span th:text="${authInfo.refresh_token}"></span><br/>
+expires_in : <span th:text="${authInfo.expires_in}"></span><br/>
+scope : <span th:text="${authInfo.scope}"></span><br/>
+
+</body>
+</html>

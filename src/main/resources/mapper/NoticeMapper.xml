@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 네임스페이스를 Mapper.java 와 동일하게 해놓으면 Mapper.java의 메소드명과 동일하게 호출이 가능하다. -->
+<mapper namespace="com.billlog.rest.salsapan.mapper.NoticeMapper">
+
+    <!-- 정보제공성 게시글 등록 -->
+    <insert id="createNoticeArticle" parameterType="SalsaNotice">
+        INSERT INTO salsa_notice(
+                title
+                , writer
+                , regdate
+                <if test="content != null">
+                    , content
+                </if>
+                , use_yn
+                )
+        VALUES (
+                #{title}
+                , #{writer}
+                , now()
+                <if test="content != null">
+                    , #{content}
+                </if>
+                , #{use_yn}
+                )
+    </insert>
+
+    <update id="modifyNoticeArticleByIdx" parameterType="SalsaNotice">
+        UPDATE salsa_notice
+        SET
+
+            title = #{title}
+            <if test="writer != null">
+                , writer = #{writer}
+            </if>
+            <if test="content != null">
+                , content = #{content}
+            </if>
+            <if test="use_yn != null">
+                , use_yn = #{use_yn}
+            </if>
+        WHERE notice_idx = #{notice_idx}
+
+    </update>
+
+</mapper>

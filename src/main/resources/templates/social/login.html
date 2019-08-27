@@ -1,0 +1,42 @@
+<!--<!DOCTYPE html>-->
+<!--<html>-->
+<!--    <head>-->
+<!--        <script>-->
+<!--            function popupKakaoLogin() {-->
+<!--                window.open('${loginUrl}', 'popupKakaoLogin', 'width=700,height=500,scrollbars=0,toolbar=0,menubar=no')-->
+<!--            }-->
+<!--        </script>-->
+<!--    </head>-->
+<!--    <body>-->
+<!--        <button onclick="popupKakaoLogin()">KakaoLogin</button>-->
+<!--    <h1>-->
+<!--        ${loginUrl}-->
+<!--        <span th:text ="${user}}">-->
+
+<!--        </span>-->
+
+<!--    </h1>-->
+<!--    </body>-->
+<!--</html>-->
+
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Thymeleaf 예제</title>
+</head>
+<script type="text/javascript" th:inline="javascript">
+    function popupKakaoLogin() {
+        /* <![CDATA[ */
+        var kurl = /*[[ ${loginUrl} ]]*/;
+        /* ]]> */
+        window.open(kurl, 'popupKakaoLogin', 'width=550,height=400,scrollbars=0,toolbar=0,menubar=no')
+    }
+</script>
+<body>
+<h1>Thymeleaf 예제</h1>
+<span th:text="${loginUrl}"></span><br/>
+<button onclick="popupKakaoLogin()">KakaoLogin</button>
+</body>
+</html>

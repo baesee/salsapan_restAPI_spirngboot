@@ -1,0 +1,61 @@
+# exception_ko.yml
+# error code
+# 00 = common
+# 10 = user
+# 30 = salsa info
+# 31 = salsa info hardcoding error
+
+#### common - 00 #####
+commonWriteFailedException:
+  code: "0001"
+  msg: "글작성에 실패하였습니다."
+
+commonDeleteFailedException:
+  code: "0002"
+  msg: "글 삭제에 실패하였습니다."
+
+commonUpdateFailedException:
+  code: "0003"
+  msg: "글 수정에 실패하였습니다."
+
+#######################
+unKnown:
+  code: "-9999"
+  msg: "알수 없는 오류가 발생하였습니다."
+userNotFound:
+  code: "-1000"
+  msg: "존재하지 않는 회원입니다."
+emailSigninFailed:
+  code: "-1001"
+  msg: "계정이 존재하지 않거나 이메일 또는 비밀번호가 정확하지 않습니다."
+entryPointException:
+  code: "-1002"
+  msg: "해당 리소스에 접근하기 위한 권한이 없습니다."
+accessDenied:
+  code: "-1003"
+  msg: "보유한 권한으로 접근할수 없는 리소스 입니다."
+communicationError:
+  code: "-1004"
+  msg: "통신 중 오류가 발생하였습니다."
+existingUser:
+  code: "-1005"
+  msg: "이미 가입한 회원입니다. 로그인을 해주십시오."
+fileUploadError:
+  code: "-1006"
+  msg: "파일 업로드 에러입니다."
+fileDownloadError:
+  code: "-1007"
+  msg: "파일 다운로드 에러입니다."
+
+#1008,"파일업로드 및 데이터 입력중 에러가 발생하였습니다."
+userModifyFailed:
+  code: "1009"
+  msg: "유저정보 변경 중 오류가 발생하였습니다."
+userDeleteFailed:
+  code: "1010"
+  msg: "유저정보 삭제 중 오류가 발생하였습니다."
+
+#SALSA_INFO - 30
+infoArticleNotFound:
+  code: "3001"
+  msg: "존재하지 않는 살사 정보게시글 입니다."

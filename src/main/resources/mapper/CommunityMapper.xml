@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 네임스페이스를 Mapper.java 와 동일하게 해놓으면 Mapper.java의 메소드명과 동일하게 호출이 가능하다. -->
+<mapper namespace="com.billlog.rest.salsapan.mapper.CommunityMapper">
+
+    <!-- 정보제공성 게시글 등록 -->
+    <insert id="createCommunityArticle" parameterType="SalsaCommunity">
+        INSERT INTO salsa_community(
+                title
+                , writer
+                , regdate
+                <if test="content != null">
+                    , content
+                </if>
+                , type
+                , use_yn
+                )
+        VALUES (
+                #{title}
+                , #{writer}
+                , now()
+                <if test="content != null">
+                    , #{content}
+                </if>
+                , #{type}
+                , #{use_yn}
+                )
+    </insert>
+
+    <update id="modifyCommunityArticleByIdx" parameterType="SalsaCommunity">
+        UPDATE salsa_community
+        SET
+
+            title = #{title}
+
+            <if test="content != null">
+                , content = #{content}
+            </if>
+            <if test="type != null">
+                , type = #{type}
+            </if>
+            <if test="use_yn != null">
+                , use_yn = #{use_yn}
+            </if>
+        WHERE community_idx = #{community_idx}
+
+    </update>
+
+</mapper>

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 네임스페이스를 Mapper.java 와 동일하게 해놓으면 Mapper.java의 메소드명과 동일하게 호출이 가능하다. -->
+<mapper namespace="com.billlog.rest.salsapan.mapper.InfoMapper">
+
+    <!-- 정보제공성 게시글 등록 -->
+    <insert id="createInfoArticle" useGeneratedKeys="true" keyProperty="info_idx" parameterType="SalsaInfo">
+        INSERT INTO salsa_info(
+                locale
+                , city
+                , title
+                <if test="sub_title != null">
+                    , sub_title
+                </if>
+
+                <if test="content != null">
+                    , content
+                </if>
+
+                <if test="money != null">
+                    , money
+                </if>
+
+                <if test="people != null">
+                    , people
+                </if>
+
+                , start_date
+
+                <if test="end_date != null">
+                    , end_date
+                </if>
+                <if test="location != null">
+                    , location
+                </if>
+
+                , phone
+
+                <if test="teacher != null">
+                    , teacher
+                </if>
+
+                , writer
+                , type
+                , use_yn
+                <if test="start_time != null">
+                    , start_time
+                </if>
+                <if test="end_time != null">
+                    , end_time
+                </if>
+                <if test="level != null">
+                    , level
+                </if>
+                ,regdate
+                <if test="dj != null">
+                    , dj
+                </if>
+                <if test="open_class != null">
+                    , open_class
+                </if>
+                <if test="detail_date != null">
+                    , detail_date
+                </if>
+                )
+        VALUES (
+                'K'
+                , #{city}
+                , #{title}
+                <if test="sub_title != null">
+                    , #{sub_title}
+                </if>
+
+                <if test="content != null">
+                    , #{content}
+                </if>
+
+                <if test="money != null">
+                    , #{money}
+                </if>
+
+                <if test="people != null">
+                    , #{people}
+                </if>
+
+                , #{start_date}
+
+                <if test="end_date != null">
+                    , #{end_date}
+                </if>
+                <if test="location != null">
+                    , #{location}
+                </if>
+
+                , #{phone}
+
+                <if test="teacher != null">
+                    , #{teacher}
+                </if>
+
+                , #{writer}
+                , #{type}
+                , 'Y'
+                <if test="start_time != null">
+                    , #{start_time}
+                </if>
+                <if test="end_time != null">
+                    , #{end_time}
+                </if>
+                <if test="level != null">
+                    , #{level}
+                </if>
+                ,now()
+                <if test="dj != null">
+                    , #{dj}
+                </if>
+                <if test="open_class != null">
+                    , #{open_class}
+                </if>
+                <if test="detail_date != null">
+                    , #{detail_date}
+                </if>
+                )
+    </insert>
+
+    <update id="modifyInfoArticleByIdx" parameterType="SalsaInfo">
+        UPDATE salsa_info
+        SET city = #{city}
+            <if test="title != null">
+                , title = #{title}
+            </if>
+            <if test="sub_title != null">
+                , sub_title = #{sub_title}
+            </if>
+            <if test="content != null">
+                , content = #{content}
+            </if>
+            <if test="money != null">
+                , money = #{money}
+            </if>
+            <if test="people != null">
+                , people = #{people}
+            </if>
+            <if test="location != null">
+                , location = #{location}
+            </if>
+            <if test="start_date != null">
+                , start_date = #{start_date}
+            </if>
+            <if test="end_date != null">
+                , end_date = #{end_date}
+            </if>
+            <if test="phone != null">
+                , phone = #{phone}
+            </if>
+            <if test="teacher != null">
+                , teacher = #{teacher}
+            </if>
+            <if test="type != null">
+                , type = #{type}
+            </if>
+            <if test="use_yn != null">
+                , use_yn = #{use_yn}
+            </if>
+            <if test="start_time != null">
+                , start_time = #{start_time}
+            </if>
+            <if test="end_time != null">
+                , end_time = #{end_time}
+            </if>
+            <if test="level != null">
+                , level = #{level}
+            </if>
+            <if test="dj != null">
+                , dj = #{dj}
+            </if>
+            <if test="open_class != null">
+                , open_class = #{open_class}
+            </if>
+            <if test="detail_date != null">
+                , detail_date = #{detail_date}
+            </if>
+        WHERE info_idx = #{info_idx}
+
+    </update>
+
+</mapper>

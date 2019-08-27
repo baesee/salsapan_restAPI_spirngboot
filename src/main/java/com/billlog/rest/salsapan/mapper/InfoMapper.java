@@ -1,0 +1,50 @@
+package com.billlog.rest.salsapan.mapper;
+
+import com.billlog.rest.salsapan.model.SalsaInfo;
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
+
+@Mapper
+public interface InfoMapper {
+
+    //정보제공성 게시글의 모든 목록 가져오기
+    @Select("SELECT * " +
+            " FROM salsa_info" +
+            " WHERE type = #{type}")
+    List<SalsaInfo> getInfoArticleAll(@Param("type") String type);
+
+    //인포 인덱스로 인포정보 특정 인포 글 가져오기
+//    @Select("SELECT * from salsa_info where info_idx = #{info_idx}")
+    @Select("SELECT info.*, file.file_idx, file.file_download_uri\n" +
+            "        from salsa_info info\n" +
+            "        LEFT JOIN salsa_file file\n" +
+            "        ON (info.info_idx = file.board_idx\n" +
+            "        AND file.use_yn = 'Y')\n" +
+            "        where info.info_idx = #{info_idx}" +
+            "        AND info.type = #{type}")
+    SalsaInfo getInfoArticleByIdx(@Param("info_idx") int info_idx, @Param("type") String type);
+
+    //정보제공성 게시글의 총 글의 수
+    @Select("SELECT COUNT(info_idx) FROM salsa_info")
+    int getInfoTotalCount();
+
+    //정보제공성 게시글 등록
+    //동적 쿼리를 사용하기 위해 InfoMapper.xml 에서 쿼리를 작성하였고,
+    //해당 메소드 명 'createInfoArticle'이 id 값과 매칭이 되어 호출이 될 수 있다.
+    int createInfoArticle(SalsaInfo salsaInfo);
+
+    //정보제공성 게시글의 수정
+    /* 동적 쿼리를 사용하기 위해 InfoMapper.xml 에서 쿼리를 작성하였고, 해당 메소드 명 'modifyInfoArticleByIdx'이 id 값과 매칭이 되어 호출이 될 수 있다.
+    @Update("UPDATE salsa_info SET title = #{title} ,content = #{content} " +
+            "WHERE info_idx = #{info_idx}")
+     */
+    int modifyInfoArticleByIdx(SalsaInfo salsaInfo);
+
+    //정보제공성 게시글의 사용 여부 변경 ( 삭제 )
+    @Delete("UPDATE salsa_info SET use_yn='N' WHERE info_idx = #{info_idx}")
+    boolean deleteInfoArticleByIdx(@Param("info_idx") int info_idx);
+}

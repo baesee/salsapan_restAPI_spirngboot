@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 네임스페이스를 Mapper.java 와 동일하게 해놓으면 Mapper.java의 메소드명과 동일하게 호출이 가능하다. -->
+<mapper namespace="com.billlog.rest.salsapan.mapper.UserMapper">
+
+    <!-- 정보제공성 게시글 등록 -->
+    <insert id="createUser" parameterType="SalsaUser">
+        INSERT INTO salsa_user(
+        user_id
+        , user_pwd
+        , user_name
+        <if test="user_city != null">
+            , user_city
+        </if>
+        , user_gender
+        <if test="user_email != null">
+            , user_email
+        </if>
+        , user_role
+        <if test="user_team != null">
+            , user_team
+        </if>
+        <if test="provider != null">
+            , provider
+        </if>
+        )
+        VALUES (
+        #{user_id}
+        , #{user_pwd}
+        , #{user_name}
+        <if test="user_city != null">
+            , #{user_city}
+        </if>
+        , #{user_gender}
+        , #{user_email}
+        , #{user_role}
+        <if test="user_team != null">
+            , #{user_team}
+        </if>
+        <if test="provider != null">
+            , #{provider}
+        </if>
+        )
+    </insert>
+
+    <update id="modifyUserById" parameterType="SalsaUser">
+        UPDATE salsa_user
+        <trim prefix="SET" prefixOverrides=",">
+
+            <if test="user_name != null">
+                ,user_name = #{user_name}
+            </if>
+            <if test="user_pwd != null">
+                , user_pwd = #{user_pwd}
+            </if>
+            <if test="user_city != null and user_city != 0">
+                , user_city = #{user_city}
+            </if>
+            <if test="user_gender != null">
+                , user_gender = #{user_gender}
+            </if>
+            <if test="user_email != null">
+                , user_email = #{user_email}
+            </if>
+            <if test="user_role != null and user_role != 0">
+                , user_role = #{user_role}
+            </if>
+            <if test="user_yn != null">
+                , user_yn = #{user_yn}
+            </if>
+            <if test="user_team != null">
+                , user_team = #{user_team}
+            </if>
+            <if test="user_auth != null">
+                , user_auth = #{user_auth}
+            </if>
+        </trim>
+        WHERE user_idx = #{user_idx}
+    </update>
+
+</mapper>

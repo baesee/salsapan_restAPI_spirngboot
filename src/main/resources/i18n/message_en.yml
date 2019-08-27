@@ -1,0 +1,65 @@
+# exception_en.yml
+# error code
+# 00 = common
+# 10 = user
+# 30 = salsa info
+# 31 = salsa info hardcoding error
+
+#### common - 00 #####
+commonWriteFailedException:
+  code: "0001"
+  msg: "Write Failed Exception"
+
+commonDeleteFailedException:
+  code: "0002"
+  msg: "Delete Failed Exception"
+
+commonUpdateFailedException:
+  code: "0003"
+  msg: "Update Failed Exception"
+
+
+
+#######################
+unKnown:
+  code: "-9999"
+  msg: "An unknown error has occurred."
+userNotFound:
+  code: "-1000"
+  msg: "This member not exist"
+emailSigninFailed:
+  code: "-1001"
+  msg: "Your account does not exist or your email or password is incorrect."
+entryPointException:
+  code: "-1002"
+  msg: "You do not have permission to access this resource."
+accessDenied:
+  code: "-1003"
+  msg: "A resource that can not be accessed with the privileges it has."
+communicationError:
+  code: "-1004"
+  msg: "An error occurred during communication."
+existingUser:
+  code: "-1005"
+  msg: "You are an existing member."
+fileUploadError:
+  code: "-1006"
+  msg: "file upload error"
+fileDownloadError:
+  code: "-1007"
+  msg: "file dowonload error"
+
+#1008,"파일업로드 및 데이터 입력중 에러가 발생하였습니다."
+userModifyFailed:
+  code: "1009"
+  msg: "UserInfo Modify Failed"
+userDeleteFailed:
+  code: "1010"
+  msg: "UserInfo Delete Failed"
+
+
+#### SALSA_INFO - 30 ####
+infoArticleNotFound:
+  code: "3001"
+  msg: "Info Article Not Found Exception."
+# 3101 -
