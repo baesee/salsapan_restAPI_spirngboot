@@ -22,6 +22,8 @@ public class SalsaUser implements UserDetails {
     private String user_yn;
     private String user_role_nm;
     private String user_team;
+    private int att_file_id; // 첨부파일 관리 번호
+    private String image_url; // 이미지 URL
 
     // 이메일 인증 관련 변수
     private String user_auth; // Y, N
@@ -197,6 +199,22 @@ public class SalsaUser implements UserDetails {
         this.user_auth_key = user_auth_key;
     }
 
+    public int getAtt_file_id() {
+        return att_file_id;
+    }
+
+    public void setAtt_file_id(int att_file_id) {
+        this.att_file_id = att_file_id;
+    }
+
+    public String getImage_url() {
+        return image_url;
+    }
+
+    public void setImage_url(String image_url) {
+        this.image_url = image_url;
+    }
+
     @Override
     public String toString() {
         return "SalsaUser{" +
@@ -212,6 +230,8 @@ public class SalsaUser implements UserDetails {
                 ", user_yn='" + user_yn + '\'' +
                 ", user_role_nm='" + user_role_nm + '\'' +
                 ", user_team='" + user_team + '\'' +
+                ", att_file_id=" + att_file_id +
+                ", image_url='" + image_url + '\'' +
                 ", user_auth='" + user_auth + '\'' +
                 ", user_auth_key='" + user_auth_key + '\'' +
                 ", msrl=" + msrl +

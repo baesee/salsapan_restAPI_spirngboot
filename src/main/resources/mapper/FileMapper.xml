@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.billlog.rest.salsapan.mapper.FileMapper">
+
+    <!-- 파일 매니저의 IDX 값을 넣고 , 가져와서 사용하기 위함. -->
+    <insert id="insertFileManage" useGeneratedKeys="true" keyProperty="file_manage_idx" parameterType="FileManage">
+        INSERT INTO salsa_file_manage(
+                regdate
+                , use_yn
+                )
+        VALUES (
+                 now()
+                , 'Y'
+                )
+        ON DUPLICATE KEY UPDATE
+			regdate = now()
+			, use_yn = #{use_yn}
+    </insert>
+
+	<!-- 파일 매니저 IDX값으로 수정 -->
+	<update id="modifyFileManage" parameterType="FileManage">
+		UPDATE salsa_file_manage
+		SET use_yn = 'Y', regdate = now()
+		WHERE file_manage_idx = ${file_manage_idx}
+	</update>
+
+    <insert id="insertFiletoDb" parameterType="FileUploadResponse">
+        INSERT INTO salsa_file (
+        	file_name
+        	, org_filename
+        	, file_path
+        	, regdate
+        	, use_yn
+        	, file_idx
+        	, file_type
+        	, size
+        	, file_download_uri
+        	, file_sn )
+		VALUES
+			(
+				#{file_name}
+				, #{org_filename}
+				, #{file_path}
+				, now()
+				, #{use_yn}
+				, #{file_idx}
+				, #{file_type}
+				, #{size}
+				, #{file_download_uri}
+				<if test="file_sn == 0 ">
+					,  (
+						SELECT
+							IFNULL( max( file_sn ) + 1, 1 )
+						FROM
+							salsa_file AS salsafile
+						WHERE
+							file_idx = #{file_idx}
+						)
+				</if>
+				<if test="file_sn != 0 ">
+					, #{file_sn}
+				</if>
+			)
+			ON DUPLICATE KEY UPDATE
+			file_name = #{file_name}
+			, org_filename = #{org_filename}
+			, file_path = #{file_path}
+			, regdate = now()
+			, use_yn = #{use_yn}
+			, file_type = #{file_type}
+			, size = #{size}
+			, file_download_uri = #{file_download_uri}
+    </insert>
+</mapper>

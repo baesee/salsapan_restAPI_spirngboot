@@ -24,10 +24,8 @@ public class CustomUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String user_id) throws UsernameNotFoundException {
-        System.err.println(" [ CustomUserDetailService.java ] loadUserByUsername() > user_id parameter value : " + user_id);
 
         SalsaUser user = userMapper.findByUsername(user_id);
-        System.err.println(" getAuthorities() : " + user.getAuthorities());
 
         //Optional<SalsaUser> user = userMapper.findByUsername(user_id);
 

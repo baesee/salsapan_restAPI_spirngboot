@@ -5,6 +5,7 @@ import com.billlog.rest.salsapan.advice.exception.CUserModifyException;
 import com.billlog.rest.salsapan.advice.exception.CUserNotFoundException;
 import com.billlog.rest.salsapan.config.security.JwtTokenProvider;
 import com.billlog.rest.salsapan.controller.common.FileUploadController;
+import com.billlog.rest.salsapan.mapper.FileMapper;
 import com.billlog.rest.salsapan.mapper.UserMapper;
 import com.billlog.rest.salsapan.model.SalsaUser;
 import com.billlog.rest.salsapan.model.response.CommonResult;
@@ -25,6 +26,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoField;
 
 @Api(tags = {"2. User"})
 @RestController
@@ -108,23 +111,37 @@ public class UserController {
     @PutMapping("/user/{user_idx}")
     public CommonResult modifyUserById(@ApiParam(value = "회원IDX", required = true)@PathVariable int user_idx,
                                        @ApiParam(value = "수정할 회원정보 Object", required = true) SalsaUser user,
-                                       @RequestParam(value="files", required = false) MultipartFile[] files) {
+                                       @ApiParam(value = "저장 디렉토리 명", required = true) String dir,
+                                       @RequestPart(value="file", required = false) MultipartFile file) {
 
-        System.err.println("mmmmmmmmmmmmmmmm");
         //유저 인덱스 번호(유저 고유정보)가 없을 경우 유저를 찾을수 없다는 에러 발생
         if("".equals(user.getUser_idx())){
             throw new CUserNotFoundException();
         }
 
-        int result = userMapper.modifyUserById(user);
+        if(!CustomUtils.isEmpty(file)){
+            int file_manage_id = 0;
 
-        fileUploadController.uploadMultipleFiles(files, user_idx);
+            SalsaUser userTemp = userMapper.getUserById(user_idx);
+
+            if( userTemp.getAtt_file_id() == 0 ){
+               file_manage_id = fileUploadController.returnFileManageId(0);
+            }else{
+               fileUploadController.modifyFileManage(userTemp.getAtt_file_id());
+               file_manage_id = userTemp.getAtt_file_id();
+            }
+            user.setAtt_file_id(file_manage_id);
+            fileUploadController.uploadFile(file, dir, file_manage_id, 1); // 새글 : 0 , 수정 : 0 이 아닌 수.
+        }
+
+        int result = userMapper.modifyUserById(user);
 
         if(result == 1) {
             return responseService.getSuccessResult();
         }else{
             throw new CUserModifyException();
         }
+
     }
 
     // 유저 index로 유저 삭제(user_yn = 'N')

@@ -75,10 +75,17 @@ public class SalsaInfoController {
     public CommonResult createInfoArticle(@ApiParam(value = "정보게시글 작성 Object", required = true) SalsaInfo salsaInfo,
                                           @RequestParam(value="files", required = false) MultipartFile[] files){
 
-        int result = infoMapper.createInfoArticle(salsaInfo);
-        System.err.println("등록이 되어버린 글 idx ::::::::::: " + salsaInfo.getInfo_idx());
+        int result = 0;
 
-//        fileUploadController.uploadMultipleFiles(files, salsaInfo.getInfo_idx());
+        if(!CustomUtils.isEmpty(salsaInfo)) {
+
+            if(!CustomUtils.isEmpty(files)) {
+                int file_manage_id = fileUploadController.returnFileManageId(0); // 새롭게 등록이 되는 경우 0
+                fileUploadController.uploadMultipleFiles(files, "info", file_manage_id);
+            }
+
+            result = infoMapper.createInfoArticle(salsaInfo);
+        }
 
         if(result == 1) {
             return responseService.getSuccessResult();

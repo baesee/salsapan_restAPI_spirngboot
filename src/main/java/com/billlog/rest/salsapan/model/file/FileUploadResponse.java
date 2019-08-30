@@ -3,16 +3,15 @@ package com.billlog.rest.salsapan.model.file;
 public class FileUploadResponse {
 
     private int file_idx;
+    private int file_sn;
     private String file_name;
     private String org_filename;
     private String file_path;
     private String regdate;
-    private String type;
-    private String use_yn;
-    private String file_download_uri;
-    private String file_type;
     private long size;
-    private int board_idx;
+    private String file_download_uri;
+    private String use_yn;
+    private String file_type;
 
     public FileUploadResponse(String file_name, String org_filename, String file_download_uri, String file_type, long size) {
         this.file_name = file_name;
@@ -22,16 +21,20 @@ public class FileUploadResponse {
         this.size = size;
     }
 
-    public FileUploadResponse(int board_idx) {
-        this.board_idx = board_idx;
-    }
-
     public int getFile_idx() {
         return file_idx;
     }
 
     public void setFile_idx(int file_idx) {
         this.file_idx = file_idx;
+    }
+
+    public int getFile_sn() {
+        return file_sn;
+    }
+
+    public void setFile_sn(int file_sn) {
+        this.file_sn = file_sn;
     }
 
     public String getFile_name() {
@@ -66,20 +69,12 @@ public class FileUploadResponse {
         this.regdate = regdate;
     }
 
-    public String getType() {
-        return type;
+    public long getSize() {
+        return size;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getUse_yn() {
-        return use_yn;
-    }
-
-    public void setUse_yn(String use_yn) {
-        this.use_yn = use_yn;
+    public void setSize(long size) {
+        this.size = size;
     }
 
     public String getFile_download_uri() {
@@ -90,6 +85,14 @@ public class FileUploadResponse {
         this.file_download_uri = file_download_uri;
     }
 
+    public String getUse_yn() {
+        return use_yn;
+    }
+
+    public void setUse_yn(String use_yn) {
+        this.use_yn = use_yn;
+    }
+
     public String getFile_type() {
         return file_type;
     }
@@ -98,36 +101,19 @@ public class FileUploadResponse {
         this.file_type = file_type;
     }
 
-    public long getSize() {
-        return size;
-    }
-
-    public void setSize(long size) {
-        this.size = size;
-    }
-
-    public int getBoard_idx() {
-        return board_idx;
-    }
-
-    public void setBoard_idx(int board_idx) {
-        this.board_idx = board_idx;
-    }
-
     @Override
     public String toString() {
         return "FileUploadResponse{" +
                 "file_idx=" + file_idx +
+                ", file_sn=" + file_sn +
                 ", file_name='" + file_name + '\'' +
                 ", org_filename='" + org_filename + '\'' +
                 ", file_path='" + file_path + '\'' +
                 ", regdate='" + regdate + '\'' +
-                ", type='" + type + '\'' +
-                ", use_yn='" + use_yn + '\'' +
-                ", file_download_uri='" + file_download_uri + '\'' +
-                ", file_type='" + file_type + '\'' +
                 ", size=" + size +
-                ", board_idx=" + board_idx +
+                ", file_download_uri='" + file_download_uri + '\'' +
+                ", use_yn='" + use_yn + '\'' +
+                ", file_type='" + file_type + '\'' +
                 '}';
     }
 }

@@ -1,6 +1,7 @@
 package com.billlog.rest.salsapan.controller.common;
 
 import com.billlog.rest.salsapan.mapper.FileMapper;
+import com.billlog.rest.salsapan.model.file.FileManage;
 import com.billlog.rest.salsapan.model.file.FileUploadProperties;
 import com.billlog.rest.salsapan.model.file.FileUploadResponse;
 import com.billlog.rest.salsapan.model.response.ListResult;
@@ -15,10 +16,12 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Arrays;
@@ -41,15 +44,42 @@ public class FileUploadController {
         this.fileUploadProperties = fileUploadProperties;
     }
 
+    /**
+     * 첨부파일을 관리하는 인덱스 번호를 가져오기 위한 메소드이다.
+     * @return file_manage_idx
+     */
+    public int returnFileManageId(int file_manage_idx){
+        FileManage fileManage = new FileManage();
+
+        if(file_manage_idx != 0){
+            fileManage.setFile_manage_idx(file_manage_idx);
+        }
+
+        fileMapper.insertFileManage(fileManage);
+
+        return fileManage.getFile_manage_idx();
+    }
+
+    public int modifyFileManage(int file_manage_idx){
+        FileManage fileManage = new FileManage();
+
+        fileManage.setFile_manage_idx(file_manage_idx);
+
+        int chkVal = fileMapper.modifyFileManage(fileManage);
+
+        return chkVal;
+    }
+
     //유효한 Jwt토큰을 설정해야만 User 리소스를 사용할 수 있도록 Header에 X-AUTH-TOKEN을 인자로 받도록 선언합니다.
     @ApiImplicitParams({
             @ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header"),
             @ApiImplicitParam(name = "Content-Type", value = "폼데이터 속성", required = true, dataType = "String", paramType = "header", defaultValue = "multipart/form-data")
     })
     @PostMapping("/uploadFile")
-    public SingleResult<FileUploadResponse> uploadFile(@RequestParam("file") MultipartFile file, int inputBoardIdx) {
+    public SingleResult<FileUploadResponse> uploadFile(@RequestParam("file") MultipartFile file, String dir, int file_manage_id, int file_sn) {
 
-        String filename = service.storeFile(file); //파일명 중복을 막기 위해 storeFile() 에서 UUID를 이용해서 파일명을 변경한다.
+        String filename = service.storeFile(file, dir); //파일명 중복을 막기 위해 storeFile() 디렉토리경로 + 당일 년/월/일/시/분/초 + 오리지널파일명 으로 한다.
+
         String org_filename = file.getOriginalFilename();
 
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -59,11 +89,12 @@ public class FileUploadController {
                 .toUriString();
 
         FileUploadResponse fp = new FileUploadResponse(filename, org_filename,fileDownloadUri, file.getContentType(), file.getSize());
-        fp.setFile_path(fileUploadProperties.getUploadDir()); // application.properties 의 file-upload-dir 의 경로 인 ./upload를 가져온다.
+        fp.setFile_path(fileUploadProperties.getUploadDir()+"/"+dir); // application.properties 의 file-upload-dir 의 경로 인 ./upload를 가져온다.
         fp.setUse_yn("Y");  //사용여부는 최초 등록시에는 무조건 Y
-        fp.setType("C");    //해당하는 타입의 게시판 정보
-        fp.setBoard_idx(inputBoardIdx); //해당 타입의 게시판의 글번호
-
+        fp.setFile_idx(file_manage_id);
+        if(file_sn != 0){
+            fp.setFile_sn(file_sn);
+        }
 
         int resultCheck = fileMapper.insertFiletoDb(fp);
 
@@ -81,11 +112,10 @@ public class FileUploadController {
             @ApiImplicitParam(name = "Content-Type", value = "폼데이터 속성", required = true, dataType = "String", paramType = "header", defaultValue = "multipart/form-data")
     })
     @PostMapping("/uploadMultipleFiles")
-    public ListResult<SingleResult<FileUploadResponse>> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files,
-                                                                            int inputBoardIdx){
+    public ListResult<SingleResult<FileUploadResponse>> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files, String dir, int file_manage_id){
 
 //        return responseService.getListResult(Arrays.asList(files).stream().map(file -> uploadFile(file)).collect(Collectors.toList()));
-        return responseService.getListResult(Arrays.asList(files).stream().map(file -> uploadFile(file,inputBoardIdx)).collect(Collectors.toList()));
+        return responseService.getListResult(Arrays.asList(files).stream().map(file -> uploadFile(file, dir, file_manage_id, 0)).collect(Collectors.toList()));
 
     }
 

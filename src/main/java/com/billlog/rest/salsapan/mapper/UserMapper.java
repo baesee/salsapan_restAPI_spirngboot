@@ -10,24 +10,18 @@ import java.util.List;
 public interface UserMapper {
 
     //유저 아이디(String)로 유저정보 가져오기
-    @Select("Select *, (select role from salsa_role where role_idx = user_role) as user_role_nm, ( SELECT city_name FROM salsa_city WHERE city_idx = user_city ) AS user_city_nm  from salsa_user where user_id = #{user_id}")
-//    @Select("Select *, (select role from salsa_role where role_idx  user_role) as user_role_nm from salsa_user where user_id = #{user_id}")
-    //@Select("Select *, concat(\"ROLE_\",( SELECT role FROM salsa_role WHERE role_idx = user_role )) AS user_role_nm from salsa_user where user_id = #{user_id}")
-    //Optional<SalsaUser> findByUsername(@Param("user_id") String user_id);
+    @Select("Select *, (select role from salsa_role where role_idx = user_role) as user_role_nm, ( SELECT city_name FROM salsa_city WHERE city_idx = user_city ) AS user_city_nm, ( SELECT file_download_uri FROM salsa_file WHERE file_idx = att_file_id) AS image_url from salsa_user where user_id = #{user_id}")
     SalsaUser findByUsername(@Param("user_id") String user_id);
 
-    @Select("Select *, (select role from salsa_role where role_idx = user_role) as user_role_nm, ( SELECT city_name FROM salsa_city WHERE city_idx = user_city ) AS user_city_nm  from salsa_user where user_id = #{user_id} and provider = #{provider}")
-//    @Select("Select *, (select role from salsa_role where role_idx = user_role) as user_role_nm from salsa_user where user_id = #{user_id} and provider = #{provider}")
+    @Select("Select *, (select role from salsa_role where role_idx = user_role) as user_role_nm, ( SELECT city_name FROM salsa_city WHERE city_idx = user_city ) AS user_city_nm, ( SELECT file_download_uri FROM salsa_file WHERE file_idx = att_file_id) AS image_url  from salsa_user where user_id = #{user_id} and provider = #{provider}")
     SalsaUser findByUidAndProvider(@Param("user_id") String user_id, @Param("provider") String provider);
 
     //유저 인덱스(int)로 유저정보 가져오기
-    @Select("Select *, (select role from salsa_role where role_idx = user_role) as user_role_nm, ( SELECT city_name FROM salsa_city WHERE city_idx = user_city ) AS user_city_nm  from salsa_user where user_idx = #{user_idx}")
-//    @Select("Select *, (select role from salsa_role where role_idx = user_role) as user_role_nm from salsa_user where user_idx = #{user_idx}")
+    @Select("Select *, (select role from salsa_role where role_idx = user_role) as user_role_nm, ( SELECT city_name FROM salsa_city WHERE city_idx = user_city ) AS user_city_nm, ( SELECT file_download_uri FROM salsa_file WHERE file_idx = att_file_id) AS image_url  from salsa_user where user_idx = #{user_idx}")
     SalsaUser getUserById(@Param("user_idx") int user_idx);
 
     //유저 전체 목록 가져오기
-    @Select("select *, (select role from salsa_role where role_idx = user_role) as user_role_nm, ( SELECT city_name FROM salsa_city WHERE city_idx = user_city ) AS user_city_nm from salsa_user")
-//    @Select("select *, (select role from salsa_role where role_idx = user_role) as user_role_nm from salsa_user")
+    @Select("select *, (select role from salsa_role where role_idx = user_role) as user_role_nm, ( SELECT city_name FROM salsa_city WHERE city_idx = user_city ) AS user_city_nm, ( SELECT file_download_uri FROM salsa_file WHERE file_idx = att_file_id) AS image_url from salsa_user")
     List<SalsaUser> getAll();
 
     //유저권한 전체 목록 가져오기
@@ -35,7 +29,6 @@ public interface UserMapper {
     List<SalsaRole> getAllRoles();
 
     //유저 사용 여부 변경 ( 삭제 )
-//    @Delete("UPDATE salsa_user SET user_yn='N' WHERE user_idx = #{user_idx}")
     @Delete("UPDATE salsa_user SET user_yn='N' WHERE user_idx = 33")
     boolean deleteUserById(@Param("user_idx") int user_idx);
 
@@ -72,10 +65,6 @@ public interface UserMapper {
     int modifyPasswordByIdx(@Param("user_idx") int user_idx, @Param("user_pwd") String user_pwd);
 
     //유저 등록
-    /*
-        @Insert("INSERT INTO salsa_user(`user_id`, `user_pwd`, `user_name`, `user_city`, `user_gender`, `user_email`, `user_role`, `user_team`) " +
-            "VALUES (#{user_id}, #{user_pwd}, #{user_name}, #{user_city}, #{user_gender}, #{user_email}, #{user_role}, #{user_team})")
-     */
     int createUser(SalsaUser user);
 
     //유저 정보 수정

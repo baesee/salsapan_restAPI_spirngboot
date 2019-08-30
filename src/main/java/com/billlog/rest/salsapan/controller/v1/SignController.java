@@ -260,8 +260,6 @@ public class SignController {
         // chkVal이 0 보다 클 경우 동일한 회원아이디가 있다는 뜻.
         int chkVal = userMapper.kakaoIdCheck(kakao_id, provider);
 
-        System.err.println("카카오 고유 ID 중복확인 : " + chkVal);
-
         if(chkVal > 0){
             return responseService.getFailResult(99901, "이미 가입된 카카오ID 입니다.");
         }else{

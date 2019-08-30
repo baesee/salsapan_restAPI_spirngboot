@@ -75,6 +75,10 @@
             <if test="user_auth != null">
                 , user_auth = #{user_auth}
             </if>
+            <if test="att_file_id != null">
+                , att_file_id = #{att_file_id}
+            </if>
+
         </trim>
         WHERE user_idx = #{user_idx}
     </update>
