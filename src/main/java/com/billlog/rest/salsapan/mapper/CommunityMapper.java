@@ -16,30 +16,42 @@ public interface CommunityMapper {
                 ", regdate" +
                 ", hit_count" +
                 ", content" +
-                ", (select count(*) from salsa_comment where board_idx = community_idx) as recommend_count " +
-            "FROM salsa_community" )
-    List<SalsaCommunity> getCommunityArticleAll();
+                ", (select count(*) from salsa_comment where comment_idx = comment_idx) as recommend_count " +
+            " FROM salsa_community" +
+            " WHERE type = #{type}" +
+            " AND use_yn = 'Y' " +
+            " ORDER BY community_idx DESC " +
+            " LIMIT #{page} , #{count}" )
+    List<SalsaCommunity> getCommunityArticleAll(@Param("type") String type, @Param("page") int page, @Param("count") int count);
 
     //커뮤니티 인덱스로 커뮤니티 게시판의 특정글 가져오기
-    @Select("SELECT * from salsa_community where community_idx = #{community_idx}")
-    SalsaCommunity getCommunityByIdx(@Param("community_idx") int community_idx);
+    @Select("SELECT community.* " +
+            " ,( SELECT file_download_uri FROM salsa_file WHERE file_idx = user.att_file_id AND use_yn = 'Y') AS image_url " +
+            " FROM salsa_community community " +
+            " JOIN salsa_user user" +
+            " ON community.writer_user_idx = user.user_idx" +
+            " WHERE community_idx = #{community_idx} " +
+            " AND type = #{type} " +
+            " AND use_yn = 'Y' ")
+    SalsaCommunity getCommunityByIdx(@Param("community_idx") int community_idx, @Param("type") String type);
 
     //커뮤니티 게시판의 총 글의 수
     @Select("SELECT COUNT(community_idx) FROM salsa_community")
     int getCommunityTotalCount();
 
     //커뮤니티 게시판 글 등록
-    //@Insert("INSERT INTO salsa_community(`title`, `writer`, `regdate`, `content`) " +
-    //        "VALUES (#{title}, #{writer}, #{regdate}, #{content})")
     int createCommunityArticle(SalsaCommunity salsaCommunity);
 
     //커뮤니티 게시글 수정
-    //@Update("UPDATE salsa_community SET title = #{title} ,content = #{content} " +
-    //       "WHERE community_idx = #{community_idx}")
     int modifyCommunityArticleByIdx(SalsaCommunity salsaCommunity);
 
     //커뮤니티 게시글 사용 여부 변경 ( 삭제 )
     @Delete("UPDATE salsa_community SET use_yn='N' WHERE community_idx = #{community_idx}")
     boolean deleteCommunityArticleByIdx(@Param("community_idx") int community_idx);
+
+    //조회수(hit_count) 증가
+    @Update("UPDATE salsa_community SET hit_count = ( hit_count + 1 ) WHERE community_idx = #{community_idx} AND type = #{type} ")
+    int modifyCommunityHitCountByIdx(@Param("community_idx") int community_idx, @Param("type") String type);
+
 
 }

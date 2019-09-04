@@ -36,9 +36,13 @@ public class NoticeController {
     })
     @ApiOperation(value = "공지사항 전체 목록 조회", notes = "공지사항 전체 목록 조회")
     @GetMapping("/notices")
-    public ListResult<SalsaNotice> getAll() {
+    public ListResult<SalsaNotice> getAll(@ApiParam(value = "페이지 번호", required = true)@RequestParam int page,
+                                          @ApiParam(value = "표시 글의 개수", required = true)@RequestParam int count) {
 
-        return responseService.getListResult(noticeMapper.getNoticeArticleAll());
+        //MariaDB LIMIT 페이지 계산식
+        page = (page - 1) * count;
+
+        return responseService.getListResult(noticeMapper.getNoticeArticleAll(page, count));
     }
 
     // notice index로 특정 정보 게시글 가져오기.

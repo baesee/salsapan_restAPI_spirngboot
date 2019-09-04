@@ -1,11 +1,13 @@
-package com.billlog.rest.salsapan.model;
+package com.billlog.rest.salsapan.model.comment;
 
-public class SalsaCommnet {
+public class SalsaComment {
     private int comment_idx;
-    private int board_idx;
+    private int comment_sn;
     private String writer;
+    private int writer_user_idx;
     private String regdate;
     private String content;
+    private String use_yn;
 
     public int getComment_idx() {
         return comment_idx;
@@ -15,12 +17,12 @@ public class SalsaCommnet {
         this.comment_idx = comment_idx;
     }
 
-    public int getBoard_idx() {
-        return board_idx;
+    public int getComment_sn() {
+        return comment_sn;
     }
 
-    public void setBoard_idx(int board_idx) {
-        this.board_idx = board_idx;
+    public void setComment_sn(int comment_sn) {
+        this.comment_sn = comment_sn;
     }
 
     public String getWriter() {
@@ -29,6 +31,14 @@ public class SalsaCommnet {
 
     public void setWriter(String writer) {
         this.writer = writer;
+    }
+
+    public int getWriter_user_idx() {
+        return writer_user_idx;
+    }
+
+    public void setWriter_user_idx(int writer_user_idx) {
+        this.writer_user_idx = writer_user_idx;
     }
 
     public String getRegdate() {
@@ -45,5 +55,13 @@ public class SalsaCommnet {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getUse_yn() {
+        return use_yn;
+    }
+
+    public void setUse_yn(String use_yn) {
+        this.use_yn = use_yn;
     }
 }

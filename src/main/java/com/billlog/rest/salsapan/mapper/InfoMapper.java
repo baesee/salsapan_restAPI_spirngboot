@@ -14,8 +14,11 @@ public interface InfoMapper {
     //정보제공성 게시글의 모든 목록 가져오기
     @Select("SELECT * " +
             " FROM salsa_info" +
-            " WHERE type = #{type}")
-    List<SalsaInfo> getInfoArticleAll(@Param("type") String type);
+            " WHERE type = #{type}" +
+            " AND use_yn = 'Y' " +
+            " ORDER BY info_idx DESC" +
+            " LIMIT #{page} , #{count}")
+    List<SalsaInfo> getInfoArticleAll(@Param("type") String type, @Param("page") int page, @Param("count") int count);
 
     //인포 인덱스로 인포정보 특정 인포 글 가져오기
 //    @Select("SELECT * from salsa_info where info_idx = #{info_idx}")

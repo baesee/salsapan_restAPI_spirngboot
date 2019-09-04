@@ -166,6 +166,28 @@ public class UserController {
         }
     }
 
+    // 현재 사용중인 패스워드 확인
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
+    })
+    @ApiOperation(value = "현재 패스워드 검증", notes = "현재 사용중인 패스워드 검증")
+    @GetMapping("/user/crtpwd/{user_idx}")
+    public CommonResult modifyPasswordByIdx(@ApiParam(value = "회원IDX", required = true)@PathVariable int user_idx,
+                                            @ApiParam(value = "기존 사용하던 패스워드", required = true) @RequestParam String current_pwd) {
+
+        SalsaUser user = userMapper.getUserById(user_idx);
+
+        if (CustomUtils.isEmpty(user)) {
+            throw new CUserNotFoundException();
+        } else {
+            if (passwordEncoder.matches(current_pwd, user.getUser_pwd())) { //기존 패스워드와 일치하는 경우.
+                return responseService.getSuccessResult();
+            }else{
+                return responseService.getFailResult(99008,"기존 패스워드가 다릅니다.");
+            }
+        }
+    }
+
     // 패스워드 변경
     @ApiImplicitParams({
             @ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")

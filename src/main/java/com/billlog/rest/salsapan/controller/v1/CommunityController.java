@@ -5,9 +5,11 @@ import com.billlog.rest.salsapan.advice.exception.CCommonDeleteFailedException;
 import com.billlog.rest.salsapan.advice.exception.CCommonUpdateFailedException;
 import com.billlog.rest.salsapan.advice.exception.CCommonWriteFailedException;
 import com.billlog.rest.salsapan.advice.exception.CInfoArticleNotFoundException;
+import com.billlog.rest.salsapan.mapper.CommentMapper;
 import com.billlog.rest.salsapan.mapper.CommunityMapper;
 import com.billlog.rest.salsapan.model.SalsaCommunity;
 import com.billlog.rest.salsapan.model.SalsaInfo;
+import com.billlog.rest.salsapan.model.comment.SalsaCommentManage;
 import com.billlog.rest.salsapan.model.response.CommonResult;
 import com.billlog.rest.salsapan.model.response.ListResult;
 import com.billlog.rest.salsapan.model.response.SingleResult;
@@ -29,6 +31,8 @@ public class CommunityController {
     @Autowired
     private CommunityMapper communityMapper;
     @Autowired
+    private CommentMapper commentMapper;
+    @Autowired
     private final ResponseService responseService; // 결과를 처리할 Service
 
     public CommunityController(ResponseService responseService) {
@@ -40,10 +44,15 @@ public class CommunityController {
             @ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
     })
     @ApiOperation(value = "커뮤니티 게시글 전체 목록 조회", notes = "커뮤니티 전체 게시글 목록 조회")
-    @GetMapping("/communitys")
-    public ListResult<SalsaCommunity>  getAll() {
+    @GetMapping("/communitys/{type}")
+    public ListResult<SalsaCommunity>  getAll(@ApiParam(value = "커뮤니티 타입", required = true)@PathVariable String type,
+                                              @ApiParam(value = "페이지 번호", required = true)@RequestParam int page,
+                                              @ApiParam(value = "표시 글의 개수", required = true)@RequestParam int count) {
 
-        return responseService.getListResult(communityMapper.getCommunityArticleAll());
+        //MariaDB LIMIT 페이지 계산식
+        page = (page - 1) * count;
+
+        return responseService.getListResult(communityMapper.getCommunityArticleAll(type, page, count));
     }
 
     // community index로 특정 정보 게시글 가져오기.
@@ -53,9 +62,13 @@ public class CommunityController {
     })
     @ApiOperation(value = "커뮤니티 게시글 조회", notes = "community_idx 이용해 정보 게시글를 조회한다.")
     @GetMapping("/community/{community_idx}")
-    public SingleResult<SalsaCommunity> getCommunityByIdx(@ApiParam(value = "커뮤니티글 IDX", required = true)@PathVariable int community_idx) {
+    public SingleResult<SalsaCommunity> getCommunityByIdx(@ApiParam(value = "커뮤니티글 IDX", required = true)@PathVariable int community_idx,
+                                                          @ApiParam(value = "커뮤니티 타입", required = true)@RequestParam String type) {
 
-        SalsaCommunity community = communityMapper.getCommunityByIdx(community_idx);
+        // 조회수 증가
+        communityMapper.modifyCommunityHitCountByIdx(community_idx, type);
+
+        SalsaCommunity community = communityMapper.getCommunityByIdx(community_idx, type);
 
         if(CustomUtils.isEmpty(community)){
             throw new CInfoArticleNotFoundException();
@@ -72,9 +85,21 @@ public class CommunityController {
     })
     @ApiOperation(value = "커뮤니티 게시글 등록", notes = "커뮤니티 게시글을 작성한다.")
     @PostMapping("/community")
-    public CommonResult createCommunityArticle(SalsaCommunity salsaCommunity){
+    public CommonResult createCommunityArticle(@ApiParam(value = "커뮤니티 정보 Object", required = true) SalsaCommunity salsaCommunity){
 
-        int result = communityMapper.createCommunityArticle(salsaCommunity);
+
+        int result = 0;
+
+        //1. 댓 글 매니저 추가 및 insert 한 manage_idx 가져오기.
+        SalsaCommentManage salsaCommentManage = new SalsaCommentManage();
+        int commnet_manage_idx = commentMapper.createCommentManage(salsaCommentManage);
+
+        if(commnet_manage_idx == 1){
+            //2. 리턴 받은 댓글관리번호를 셋팅.
+            salsaCommunity.setComment_idx(salsaCommentManage.getComment_manage_idx());
+            //3. 댓글 관리 번호를 셋팅한 후 커뮤니티 글 생성
+            result = communityMapper.createCommunityArticle(salsaCommunity);
+        }
 
         if(result == 1) {
             return responseService.getSuccessResult();

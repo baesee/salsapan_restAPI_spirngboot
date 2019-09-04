@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 네임스페이스를 Mapper.java 와 동일하게 해놓으면 Mapper.java의 메소드명과 동일하게 호출이 가능하다. -->
+<mapper namespace="com.billlog.rest.salsapan.mapper.CommentMapper">
+
+    <!-- 댓글 관리 번호 등록 -->
+    <insert id="createCommentManage" useGeneratedKeys="true" keyProperty="comment_manage_idx" parameterType="SalsaCommentManage">
+        INSERT INTO salsa_comment_manage(
+                regdate
+                , use_yn
+                )
+        VALUES (
+                 now()
+                , 'Y'
+                )
+    </insert>
+
+
+    <!-- 댓글 등록 -->
+    <insert id="createComment" parameterType="SalsaComment">
+        INSERT INTO salsa_comment(
+                comment_idx
+                , comment_sn
+                , writer_user_idx
+                , regdate
+                , content
+                , use_yn
+                )
+        VALUES (
+                #{comment_idx}
+                , (SELECT IFNULL( max( comment_sn ) + 1, 1 ) FROM salsa_comment as comment where comment_idx = #{comment_idx})
+                , #{writer_user_idx}
+                , now()
+                , #{content}
+                , 'Y'
+                )
+    </insert>
+</mapper>

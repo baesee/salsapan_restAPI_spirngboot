@@ -40,9 +40,14 @@ public class SalsaInfoController {
     })
     @ApiOperation(value = "정보성 게시글 전체 목록 조회", notes = "class, party, club 구분없이 모든 목록을 조회온다.")
     @GetMapping("/infos/{type}")
-    public ListResult<SalsaInfo> getAll(@ApiParam(value = "정보성글의 타입", required = true)@PathVariable String type) {
+    public ListResult<SalsaInfo> getAll(@ApiParam(value = "정보성글의 타입", required = true)@PathVariable String type,
+                                        @ApiParam(value = "페이지 번호", required = true)@RequestParam int page,
+                                        @ApiParam(value = "표시 글의 개수", required = true)@RequestParam int count) {
 
-        return responseService.getListResult(infoMapper.getInfoArticleAll(type));
+        //MariaDB LIMIT 페이지 계산식
+        page = (page - 1) * count;
+
+        return responseService.getListResult(infoMapper.getInfoArticleAll(type, page, count));
     }
 
     //유효한 Jwt토큰을 설정해야만 User 리소스를 사용할 수 있도록 Header에 X-AUTH-TOKEN을 인자로 받도록 선언합니다.
