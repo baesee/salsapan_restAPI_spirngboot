@@ -29,6 +29,7 @@ public class SalsaInfo{
     private String dj;
     private String open_class;
     private String detail_date; // 주 1회 월요일. 이런식의 세부 시작일을 작성하는 필드.
+    private int writer_user_idx;
 
     //file -> List 로 받아야한다.
     private int file_idx;
@@ -248,5 +249,13 @@ public class SalsaInfo{
 
     public void setDetail_date(String detail_date) {
         this.detail_date = detail_date;
+    }
+
+    public int getWriter_user_idx() {
+        return writer_user_idx;
+    }
+
+    public void setWriter_user_idx(int writer_user_idx) {
+        this.writer_user_idx = writer_user_idx;
     }
 }

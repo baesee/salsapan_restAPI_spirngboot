@@ -16,8 +16,8 @@ public interface CommunityMapper {
                 ", regdate" +
                 ", hit_count" +
                 ", content" +
-                ", (select count(*) from salsa_comment where comment_idx = comment_idx) as recommend_count " +
-            " FROM salsa_community" +
+                ", (select count(*) from salsa_comment where comment_idx = community.comment_idx) as recommend_count " +
+            " FROM salsa_community as community" +
             " WHERE type = #{type}" +
             " AND use_yn = 'Y' " +
             " ORDER BY community_idx DESC " +

@@ -109,6 +109,26 @@ public class ExceptionAdvice {
         return responseService.getFailResult(Integer.valueOf(getMessage("accessDenied.code")), getMessage("accessDenied.msg"));
     }
 
+    //패스워드 찾기 - 패스워드 변경 중 오류발생 CUserPasswordModException
+    @ExceptionHandler(CUserPasswordModException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public CommonResult userPasswordModException(HttpServletRequest request, CUserPasswordModException e) {
+        return responseService.getFailResult(Integer.valueOf(getMessage("userPasswordModException.code")), getMessage("userPasswordModException.msg"));
+    }
+    //패스워드 찾기 - 해당 사용자의 계정은 올바르나 닉네임이 다를 경우
+    @ExceptionHandler(CUserNicknameNotFoundException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public CommonResult userNicknameNotFoundException(HttpServletRequest request, CUserNicknameNotFoundException e) {
+        return responseService.getFailResult(Integer.valueOf(getMessage("userNicknameNotFoundException.code")), getMessage("userNicknameNotFoundException.msg"));
+    }
+
+    //패스워드 찾기 - 해당 사용자의 계정은 올바르나 이메일이 다를 경우
+    @ExceptionHandler(CUserEmailNotFoundException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public CommonResult userEmailNotFoundException(HttpServletRequest request, CUserEmailNotFoundException e) {
+        return responseService.getFailResult(Integer.valueOf(getMessage("userEmailNotFoundException.code")), getMessage("userEmailNotFoundException.msg"));
+    }
+
     // code정보에 해당하는 메시지를 조회합니다.
     private String getMessage(String code) {
         return getMessage(code, null);

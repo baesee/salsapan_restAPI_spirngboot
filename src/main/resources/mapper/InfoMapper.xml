@@ -63,6 +63,7 @@
                 <if test="detail_date != null">
                     , detail_date
                 </if>
+                ,writer_user_idx
                 )
         VALUES (
                 'K'
@@ -121,6 +122,7 @@
                 <if test="detail_date != null">
                     , #{detail_date}
                 </if>
+                , #{writer_user_idx}
                 )
     </insert>
 

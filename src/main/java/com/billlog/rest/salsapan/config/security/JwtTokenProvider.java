@@ -53,27 +53,19 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
 
     // Jwt 토큰으로 인증 정보를 조회
     public Authentication getAuthentication(String token) {
-        System.err.println(" -----=========== [ 1-1 ] 인증 : parameter token : " + token);
 //        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserPk(token));
         SalsaUser userDetails = (SalsaUser) userDetailsService.loadUserByUsername(this.getUserPk(token));
-        System.err.println(" -----=========== [ 1-2 ] 인증 : " + userDetails.getAuthorities() + " username : " + userDetails.getUsername());
-        System.err.println(" -----=========== [ 1-3 ] 인증 : " + userDetails);
-
 
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
     // Jwt 토큰에서 회원 구별 정보 추출
     public String getUserPk(String token) {
-        System.err.println(" -----=========== [ 2 ] : " + Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject());
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
     // Request의 Header에서 token 파싱 : "X-AUTH-TOKEN: jwt토큰"
     public String resolveToken(HttpServletRequest req) {
-        System.err.println(" -----=========== [ resolveToken() 3 -1 ] : " + req);
-        System.err.println(" -----=========== [ resolveToken() 3 -2 ] Content-Type : " + req.getHeader("Content-Type"));
-        System.err.println(" -----=========== [ resolveToken() 3 -3 ] X-AUTH-TOKEN : " + req.getHeader("X-AUTH-TOKEN"));
         return req.getHeader("X-AUTH-TOKEN");
     }
 

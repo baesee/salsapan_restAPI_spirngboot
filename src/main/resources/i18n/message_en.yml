@@ -48,6 +48,15 @@ fileUploadError:
 fileDownloadError:
   code: "-1007"
   msg: "file dowonload error"
+userPasswordModException:
+  code: "-1011"
+  msg: "An error occurred during password search data operation."
+userNicknameNotFoundException:
+  code: "-1012"
+  msg: "Please check your nickname."
+userEmailNotFoundException:
+  code: "-1013"
+  msg: "Please check your email."
 
 #1008,"파일업로드 및 데이터 입력중 에러가 발생하였습니다."
 userModifyFailed:

@@ -1,8 +1,6 @@
 package com.billlog.rest.salsapan.controller.v1;
 
-import com.billlog.rest.salsapan.advice.exception.CEmailSigninFailedException;
-import com.billlog.rest.salsapan.advice.exception.CUserExistException;
-import com.billlog.rest.salsapan.advice.exception.CUserNotFoundException;
+import com.billlog.rest.salsapan.advice.exception.*;
 import com.billlog.rest.salsapan.config.security.JwtTokenProvider;
 import com.billlog.rest.salsapan.mapper.UserMapper;
 import com.billlog.rest.salsapan.model.KakaoProfile;
@@ -135,31 +133,46 @@ public class SignController {
                                      @ApiParam(value = "회원 E-mail", required = true) @RequestParam String user_email) {
 
         String findPwd = "";
-        findPwd = userMapper.findUserPwd(user_id, user_name, user_email);
 
-        if(!"".equals(findPwd) && findPwd != null ){
+        SalsaUser userFindById = userMapper.findByUsername(user_id);
 
-            SalsaUser user = new SalsaUser();
-
-            String uuid = UUID.randomUUID().toString().replaceAll("-","");
-            uuid = uuid.substring(0,12); // 12자리 임시비밀번호.
-
-            user.setUser_id(user_id);
-            user.setUser_name(user_name);
-            user.setUser_email(user_email);
-            user.setUser_pwd(passwordEncoder.encode(uuid));
-
-            int tmpPwdModifyCheck = userMapper.modifyUserByIdNameEmail(user);
-
-            if( tmpPwdModifyCheck > 0 ) {
-                sendEmail("pwd", user_email, uuid);
-
-                return responseService.getSingleResult(uuid);
+        if(!CustomUtils.isEmpty(userFindById)){
+            if(!userFindById.getUser_name().equals(user_name)){
+                //해당 사용자의 계정은 올바르나 닉네임이 다를 경우
+                throw new CUserNicknameNotFoundException();
+            }else if(!userFindById.getUser_email().equals(user_email)){
+                //해당 사용자의 계정은 올바르나 이메일이 다를 경우
+                throw new CUserEmailNotFoundException();
             }else{
-                /**
-                 * 이건 패스워드 변경 실패하였다 로 변경해야함.
-                 */
-                throw new CUserNotFoundException();
+                findPwd = userMapper.findUserPwd(user_id, user_name, user_email);
+
+                if(!"".equals(findPwd) && findPwd != null ){
+
+                    SalsaUser user = new SalsaUser();
+
+                    String uuid = UUID.randomUUID().toString().replaceAll("-","");
+                    uuid = uuid.substring(0,12); // 12자리 임시비밀번호.
+
+                    user.setUser_id(user_id);
+                    user.setUser_name(user_name);
+                    user.setUser_email(user_email);
+                    user.setUser_pwd(passwordEncoder.encode(uuid));
+
+                    int tmpPwdModifyCheck = userMapper.modifyUserByIdNameEmail(user);
+
+                    if( tmpPwdModifyCheck > 0 ) {
+                        sendEmail("pwd", user_email, uuid);
+
+                        return responseService.getSingleResult(uuid);
+                    }else{
+                        /**
+                         * 이건 패스워드 변경 실패하였다 로 변경해야함.
+                         */
+                        throw new CUserPasswordModException();
+                    }
+                }else{
+                    throw new CUserNotFoundException();
+                }
             }
         }else{
             throw new CUserNotFoundException();

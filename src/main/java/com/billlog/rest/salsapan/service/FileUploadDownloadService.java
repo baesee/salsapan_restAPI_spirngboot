@@ -106,7 +106,6 @@ public class FileUploadDownloadService {
     public boolean checkPath(Path pathName){
         File file = new File(pathName.toString());
 
-        System.err.println(pathName + " is exists ? " + file.exists());
         boolean chkVal = file.exists();
 
         return chkVal;
