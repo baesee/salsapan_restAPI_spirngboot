@@ -8,6 +8,8 @@ public class SalsaComment {
     private String regdate;
     private String content;
     private String use_yn;
+    private String user_name;
+    private String image_url;
 
     public int getComment_idx() {
         return comment_idx;
@@ -63,5 +65,21 @@ public class SalsaComment {
 
     public void setUse_yn(String use_yn) {
         this.use_yn = use_yn;
+    }
+
+    public String getUser_name() {
+        return user_name;
+    }
+
+    public void setUser_name(String user_name) {
+        this.user_name = user_name;
+    }
+
+    public String getImage_url() {
+        return image_url;
+    }
+
+    public void setImage_url(String image_url) {
+        this.image_url = image_url;
     }
 }
