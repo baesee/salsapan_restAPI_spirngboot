@@ -10,7 +10,7 @@ public class SalsaInfo{
     private String title;
     private String sub_title;
     private String content;
-    private String money;
+    private int money;
     private String people;
     private String start_date;
     private String end_date;
@@ -83,11 +83,11 @@ public class SalsaInfo{
         this.content = content;
     }
 
-    public String getMoney() {
+    public int getMoney() {
         return money;
     }
 
-    public void setMoney(String money) {
+    public void setMoney(int money) {
         this.money = money;
     }
 

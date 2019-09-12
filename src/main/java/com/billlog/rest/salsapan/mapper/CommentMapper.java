@@ -1,13 +1,11 @@
 package com.billlog.rest.salsapan.mapper;
 
 import com.billlog.rest.salsapan.model.SalsaCommunity;
+import com.billlog.rest.salsapan.model.SalsaUser;
 import com.billlog.rest.salsapan.model.comment.SalsaComment;
 import com.billlog.rest.salsapan.model.comment.SalsaCommentManage;
 import com.billlog.rest.salsapan.model.file.FileManage;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -40,5 +38,17 @@ public interface CommentMapper {
 
     //댓글 작성
     int createComment(SalsaComment salsaComment);
+
+    //댓글 수정
+    int modifyCommentByIdxSn(SalsaComment salsaComment);
+
+    //댓글 삭제
+    @Delete("UPDATE salsa_comment " +
+            " SET use_yn = 'N' " +
+            " WHERE" +
+            " comment_idx = #{comment_idx} " +
+            " AND comment_sn = #{comment_sn} " +
+            " AND writer_user_idx = #{writer_user_idx} ")
+    boolean deleteCommentByIdxSn(@Param("comment_idx") int comment_idx, @Param("comment_sn") int comment_sn, @Param("writer_user_idx") int writer_user_idx);
 
 }

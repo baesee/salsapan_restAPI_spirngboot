@@ -36,4 +36,17 @@
                 , 'Y'
                 )
     </insert>
+
+    <!-- 댓글 수정 -->
+    <update id="modifyCommentByIdxSn" parameterType="SalsaComment">
+        UPDATE salsa_comment
+        SET    regdate = now()
+            <if test="content != null">
+                ,content = #{content}
+            </if>
+        WHERE comment_idx = #{comment_idx}
+        AND comment_sn = #{comment_sn}
+        AND writer_user_idx = #{writer_user_idx}
+        AND use_yn = 'Y'
+    </update>
 </mapper>

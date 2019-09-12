@@ -78,7 +78,12 @@ public class SalsaInfoController {
     @ApiOperation(value = "정보게시글 등록", notes = "정보성 게시물을 작성한다.")
     @PostMapping("/info")
     public CommonResult createInfoArticle(@ApiParam(value = "정보게시글 작성 Object", required = true) SalsaInfo salsaInfo,
+                                          @RequestPart(value="files", required = false) MultipartFile[] files,
+                                          @ApiParam(value = "저장 디렉토리 명", required = true) String dir){
+    /*
+    public CommonResult createInfoArticle(@ApiParam(value = "정보게시글 작성 Object", required = true) SalsaInfo salsaInfo,
                                           @RequestParam(value="files", required = false) MultipartFile[] files){
+    */
 
         int result = 0;
 
@@ -86,7 +91,7 @@ public class SalsaInfoController {
 
             if(!CustomUtils.isEmpty(files)) {
                 int file_manage_id = fileUploadController.returnFileManageId(0); // 새롭게 등록이 되는 경우 0
-                fileUploadController.uploadMultipleFiles(files, "info", file_manage_id);
+                fileUploadController.uploadMultipleFiles(files, dir, file_manage_id);
             }
 
             result = infoMapper.createInfoArticle(salsaInfo);

@@ -1,14 +1,20 @@
 package com.billlog.rest.salsapan.controller.v1;
 
+import com.billlog.rest.salsapan.advice.exception.CUserDeleteException;
+import com.billlog.rest.salsapan.advice.exception.CUserModifyException;
+import com.billlog.rest.salsapan.advice.exception.CUserNotFoundException;
 import com.billlog.rest.salsapan.mapper.CommentMapper;
 import com.billlog.rest.salsapan.model.SalsaCommunity;
+import com.billlog.rest.salsapan.model.SalsaUser;
 import com.billlog.rest.salsapan.model.comment.SalsaComment;
 import com.billlog.rest.salsapan.model.response.CommonResult;
 import com.billlog.rest.salsapan.model.response.ListResult;
 import com.billlog.rest.salsapan.service.ResponseService;
+import com.billlog.rest.salsapan.util.CustomUtils;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Api(tags = {"9-3. Comment"})
 @RestController
@@ -55,6 +61,56 @@ public class CommentController {
         result = commentMapper.createComment(salsaComment);
 
         if (result == 1) {
+            return responseService.getSuccessResult();
+        } else {
+            return responseService.getFailResult(99010, "댓글 등록 작업중 에러가 발생하였습니다.");
+        }
+    }
+
+    // 댓글 내용 수정
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
+    })
+    @ApiOperation(value = "댓글 내용 수정", notes = "작성한 댓글을 수정한다.")
+    @PutMapping("/comment/{comment_idx}/{comment_sn}")
+    public CommonResult modifyCommentByIdxSn(@ApiParam(value = "댓글 IDX", required = true)@PathVariable int comment_idx,
+                                             @ApiParam(value = "댓글 SN", required = true) @PathVariable int comment_sn,
+                                             @ApiParam(value = "댓글 작성자", required = true) @RequestParam int writer_user_idx,
+                                             @ApiParam(value = "댓글 내용") @RequestParam String content) {
+
+        SalsaComment salsaComment = new SalsaComment();
+        salsaComment.setComment_idx(comment_idx);
+        salsaComment.setComment_sn(comment_sn);
+        salsaComment.setWriter_user_idx(writer_user_idx);
+
+        if(!"".equals(content) || content != null) {
+            salsaComment.setContent(content);
+        }
+
+        int result = commentMapper.modifyCommentByIdxSn(salsaComment);
+
+        if(result == 1) {
+            return responseService.getSuccessResult();
+        }else{
+            return responseService.getFailResult(99011, "댓글 수정 작업중 에러가 발생하였습니다.");
+        }
+
+    }
+
+    // 댓글 삭제(user_yn = 'N')
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
+    })
+    @ApiOperation(value = "댓글 삭제", notes = "댓글(Comment) 삭제(사용여부 변경)")
+    @DeleteMapping("/comment/{comment_idx}/{comment_sn}")
+    public CommonResult deleteCommentByIdxSn(@ApiParam(value = "댓글 IDX", required = true)@PathVariable int comment_idx,
+                                             @ApiParam(value = "댓글 SN", required = true) @PathVariable int comment_sn,
+                                             @ApiParam(value = "댓글 작성자", required = true) @RequestParam int writer_user_idx) {
+
+
+        Boolean result = commentMapper.deleteCommentByIdxSn(comment_idx, comment_sn, writer_user_idx);
+
+        if (result) {
             return responseService.getSuccessResult();
         } else {
             return responseService.getFailResult(99010, "댓글 등록 작업중 에러가 발생하였습니다.");
