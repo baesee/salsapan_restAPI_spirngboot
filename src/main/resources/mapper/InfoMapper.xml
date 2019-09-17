@@ -64,6 +64,12 @@
                     , detail_date
                 </if>
                 ,writer_user_idx
+                <if test="fullpass != null">
+                    , fullpass
+                </if>
+                <if test="att_file_id != null">
+                    , att_file_id
+                </if>
                 )
         VALUES (
                 'K'
@@ -123,6 +129,13 @@
                     , #{detail_date}
                 </if>
                 , #{writer_user_idx}
+                <if test="fullpass != null">
+                    , #{fullpass}
+                </if>
+                <if test="att_file_id != null">
+                    , #{att_file_id}
+                </if>
+
                 )
     </insert>
 
@@ -148,7 +161,9 @@
                 , location = #{location}
             </if>
             <if test="start_date != null">
-                , start_date = #{start_date}
+                , start_date = DATE_FORMAT(#{start_date},'%Y-%m-%d')
+--                 , start_date = #{start_date}
+
             </if>
             <if test="end_date != null">
                 , end_date = #{end_date}
@@ -182,6 +197,9 @@
             </if>
             <if test="detail_date != null">
                 , detail_date = #{detail_date}
+            </if>
+            <if test="fullpass != null">
+                , fullpass = #{fullpass}
             </if>
         WHERE info_idx = #{info_idx}
 

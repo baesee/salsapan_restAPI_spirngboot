@@ -72,4 +72,11 @@
 			, size = #{size}
 			, file_download_uri = #{file_download_uri}
     </insert>
+
+	<select id="getFilesByIdx" parameterType="java.lang.Integer" resultType="FileUploadResponse">
+        SELECT file_idx, file_sn, file_download_uri
+        FROM salsa_file
+        WHERE file_idx = #{file_idx}
+        ORDER BY file_sn ASC
+    </select>
 </mapper>

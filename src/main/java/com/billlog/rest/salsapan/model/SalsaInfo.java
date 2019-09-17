@@ -2,11 +2,14 @@ package com.billlog.rest.salsapan.model;
 
 import com.billlog.rest.salsapan.model.file.FileUploadResponse;
 
+import java.util.List;
+
 public class SalsaInfo{
 
     private int info_idx;
     private String locale;
     private String city;
+    private String city_nm;
     private String title;
     private String sub_title;
     private String content;
@@ -30,10 +33,15 @@ public class SalsaInfo{
     private String open_class;
     private String detail_date; // 주 1회 월요일. 이런식의 세부 시작일을 작성하는 필드.
     private int writer_user_idx;
+    private int fullpass; // 풀패스 금액
+    private int att_file_id;
 
     //file -> List 로 받아야한다.
     private int file_idx;
     private String file_download_uri;
+
+    //file list
+    private List<FileUploadResponse> infoFiles = null;
 
     public int getInfo_idx() {
         return info_idx;
@@ -57,6 +65,14 @@ public class SalsaInfo{
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public String getCity_nm() {
+        return city_nm;
+    }
+
+    public void setCity_nm(String city_nm) {
+        this.city_nm = city_nm;
     }
 
     public String getTitle() {
@@ -257,5 +273,29 @@ public class SalsaInfo{
 
     public void setWriter_user_idx(int writer_user_idx) {
         this.writer_user_idx = writer_user_idx;
+    }
+
+    public int getFullpass() {
+        return fullpass;
+    }
+
+    public void setFullpass(int fullpass) {
+        this.fullpass = fullpass;
+    }
+
+    public int getAtt_file_id() {
+        return att_file_id;
+    }
+
+    public void setAtt_file_id(int att_file_id) {
+        this.att_file_id = att_file_id;
+    }
+
+    public List<FileUploadResponse> getInfoFiles() {
+        return infoFiles;
+    }
+
+    public void setInfoFiles(List<FileUploadResponse> infoFiles) {
+        this.infoFiles = infoFiles;
     }
 }

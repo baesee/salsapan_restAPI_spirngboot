@@ -5,6 +5,7 @@ import com.billlog.rest.salsapan.advice.exception.CCommonUpdateFailedException;
 import com.billlog.rest.salsapan.advice.exception.CCommonWriteFailedException;
 import com.billlog.rest.salsapan.advice.exception.CInfoArticleNotFoundException;
 import com.billlog.rest.salsapan.controller.common.FileUploadController;
+import com.billlog.rest.salsapan.mapper.FileMapper;
 import com.billlog.rest.salsapan.mapper.InfoMapper;
 import com.billlog.rest.salsapan.model.SalsaInfo;
 import com.billlog.rest.salsapan.model.file.FileUploadResponse;
@@ -18,6 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Api(tags = {"3. SalsaInfo"})
 @RestController
 @RequestMapping(value = "/v1")
@@ -25,6 +29,8 @@ public class SalsaInfoController {
 
     @Autowired
     private InfoMapper infoMapper;
+    @Autowired
+    private FileMapper fileMapper;
     @Autowired
     private final ResponseService responseService; // 결과를 처리할 Service
     private final FileUploadController fileUploadController; // 결과를 처리할 Service
@@ -65,6 +71,12 @@ public class SalsaInfoController {
         if(CustomUtils.isEmpty(info)){
             throw new CInfoArticleNotFoundException();
         }else{
+
+            if( !CustomUtils.isEmpty(info.getAtt_file_id()) ){
+                //해당 글에 등록된 파일이 있으면 가져와서 셋팅한다.
+                info.setInfoFiles(fileMapper.getFilesByIdx(info.getAtt_file_id()));
+            }
+
             return responseService.getSingleResult(info);
         }
     }
@@ -77,13 +89,10 @@ public class SalsaInfoController {
     })
     @ApiOperation(value = "정보게시글 등록", notes = "정보성 게시물을 작성한다.")
     @PostMapping("/info")
+
     public CommonResult createInfoArticle(@ApiParam(value = "정보게시글 작성 Object", required = true) SalsaInfo salsaInfo,
                                           @RequestPart(value="files", required = false) MultipartFile[] files,
                                           @ApiParam(value = "저장 디렉토리 명", required = true) String dir){
-    /*
-    public CommonResult createInfoArticle(@ApiParam(value = "정보게시글 작성 Object", required = true) SalsaInfo salsaInfo,
-                                          @RequestParam(value="files", required = false) MultipartFile[] files){
-    */
 
         int result = 0;
 
@@ -91,6 +100,10 @@ public class SalsaInfoController {
 
             if(!CustomUtils.isEmpty(files)) {
                 int file_manage_id = fileUploadController.returnFileManageId(0); // 새롭게 등록이 되는 경우 0
+
+                //해당 글에 파일 관리 번호를 지정해준다.
+                salsaInfo.setAtt_file_id(file_manage_id);
+
                 fileUploadController.uploadMultipleFiles(files, dir, file_manage_id);
             }
 

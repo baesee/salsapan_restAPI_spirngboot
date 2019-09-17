@@ -55,9 +55,10 @@ public class FileUploadController {
             fileManage.setFile_manage_idx(file_manage_idx);
         }
 
-        fileMapper.insertFileManage(fileManage);
+        int chkVal = fileMapper.insertFileManage(fileManage);
+        int rtnFMngIdx = fileManage.getFile_manage_idx();
 
-        return fileManage.getFile_manage_idx();
+        return rtnFMngIdx;
     }
 
     public int modifyFileManage(int file_manage_idx){
@@ -66,8 +67,9 @@ public class FileUploadController {
         fileManage.setFile_manage_idx(file_manage_idx);
 
         int chkVal = fileMapper.modifyFileManage(fileManage);
+        int rtnFMngIdx = fileManage.getFile_manage_idx();
 
-        return chkVal;
+        return rtnFMngIdx;
     }
 
     //유효한 Jwt토큰을 설정해야만 User 리소스를 사용할 수 있도록 Header에 X-AUTH-TOKEN을 인자로 받도록 선언합니다.

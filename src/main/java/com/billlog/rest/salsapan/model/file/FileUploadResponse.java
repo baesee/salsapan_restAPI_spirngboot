@@ -13,6 +13,13 @@ public class FileUploadResponse {
     private String use_yn;
     private String file_type;
 
+
+    public FileUploadResponse(int file_idx, int file_sn, String file_download_uri) {
+        this.file_idx = file_idx;
+        this.file_sn = file_sn;
+        this.file_download_uri = file_download_uri;
+    }
+
     public FileUploadResponse(String file_name, String org_filename, String file_download_uri, String file_type, long size) {
         this.file_name = file_name;
         this.org_filename = org_filename;

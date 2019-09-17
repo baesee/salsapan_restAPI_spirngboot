@@ -1,6 +1,7 @@
 package com.billlog.rest.salsapan.mapper;
 
 import com.billlog.rest.salsapan.model.SalsaInfo;
+import com.billlog.rest.salsapan.model.file.FileUploadResponse;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -12,8 +13,9 @@ import java.util.List;
 public interface InfoMapper {
 
     //정보제공성 게시글의 모든 목록 가져오기
-    @Select("SELECT * " +
-            " FROM salsa_info" +
+    @Select("SELECT info.* " +
+            " , ( SELECT city_name FROM salsa_city WHERE city_idx = info.city ) as city_nm " +
+            " FROM salsa_info info" +
             " WHERE type = #{type}" +
             " AND use_yn = 'Y' " +
             " ORDER BY info_idx DESC" +
@@ -21,14 +23,11 @@ public interface InfoMapper {
     List<SalsaInfo> getInfoArticleAll(@Param("type") String type, @Param("page") int page, @Param("count") int count);
 
     //인포 인덱스로 인포정보 특정 인포 글 가져오기
-//    @Select("SELECT * from salsa_info where info_idx = #{info_idx}")
-    @Select("SELECT info.*, file.file_idx, file.file_download_uri\n" +
-            "        from salsa_info info\n" +
-            "        LEFT JOIN salsa_file file\n" +
-            "        ON (info.info_idx = file.board_idx\n" +
-            "        AND file.use_yn = 'Y')\n" +
-            "        where info.info_idx = #{info_idx}" +
-            "        AND info.type = #{type}")
+    @Select("SELECT info.* \n" +
+            " , ( SELECT city_name FROM salsa_city WHERE city_idx = info.city ) as city_nm \n" +
+            "        FROM salsa_info info \n" +
+            "        WHERE info_idx = #{info_idx}" +
+            "        AND type = #{type}")
     SalsaInfo getInfoArticleByIdx(@Param("info_idx") int info_idx, @Param("type") String type);
 
     //정보제공성 게시글의 총 글의 수
