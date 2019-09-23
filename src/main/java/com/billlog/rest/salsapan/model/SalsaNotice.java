@@ -9,6 +9,7 @@ public class SalsaNotice {
     private String content;
     private int hit_count;
     private String use_yn;
+    private int writer_user_idx;
 
     public int getNotice_idx() {
         return notice_idx;
@@ -66,6 +67,14 @@ public class SalsaNotice {
         this.use_yn = use_yn;
     }
 
+    public int getWriter_user_idx() {
+        return writer_user_idx;
+    }
+
+    public void setWriter_user_idx(int writer_user_idx) {
+        this.writer_user_idx = writer_user_idx;
+    }
+
     @Override
     public String toString() {
         return "SalsaNotice{" +
@@ -76,6 +85,7 @@ public class SalsaNotice {
                 ", content='" + content + '\'' +
                 ", hit_count=" + hit_count +
                 ", use_yn='" + use_yn + '\'' +
+                ", writer_user_idx=" + writer_user_idx +
                 '}';
     }
 }

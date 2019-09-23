@@ -8,7 +8,7 @@
     <insert id="createNoticeArticle" parameterType="SalsaNotice">
         INSERT INTO salsa_notice(
                 title
-                , writer
+                , writer_user_idx
                 , regdate
                 <if test="content != null">
                     , content
@@ -17,30 +17,29 @@
                 )
         VALUES (
                 #{title}
-                , #{writer}
+                , #{writer_user_idx}
                 , now()
                 <if test="content != null">
                     , #{content}
                 </if>
-                , #{use_yn}
+                , 'Y'
                 )
     </insert>
 
     <update id="modifyNoticeArticleByIdx" parameterType="SalsaNotice">
         UPDATE salsa_notice
         SET
-
             title = #{title}
-            <if test="writer != null">
-                , writer = #{writer}
-            </if>
+            , writer_user_idx = #{writer_user_idx}
             <if test="content != null">
                 , content = #{content}
             </if>
             <if test="use_yn != null">
                 , use_yn = #{use_yn}
             </if>
+            ,regdate = now()
         WHERE notice_idx = #{notice_idx}
+        AND writer_user_idx = #{writer_user_idx}
 
     </update>
 

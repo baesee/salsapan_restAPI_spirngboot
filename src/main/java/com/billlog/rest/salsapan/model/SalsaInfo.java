@@ -36,6 +36,11 @@ public class SalsaInfo{
     private int fullpass; // 풀패스 금액
     private int att_file_id;
 
+    private String writer_user_name;
+    private String writer_image_url;
+    private String poster_image_url;
+
+
     //file -> List 로 받아야한다.
     private int file_idx;
     private String file_download_uri;
@@ -297,5 +302,29 @@ public class SalsaInfo{
 
     public void setInfoFiles(List<FileUploadResponse> infoFiles) {
         this.infoFiles = infoFiles;
+    }
+
+    public String getWriter_user_name() {
+        return writer_user_name;
+    }
+
+    public void setWriter_user_name(String writer_user_name) {
+        this.writer_user_name = writer_user_name;
+    }
+
+    public String getWriter_image_url() {
+        return writer_image_url;
+    }
+
+    public void setWriter_image_url(String writer_image_url) {
+        this.writer_image_url = writer_image_url;
+    }
+
+    public String getPoster_image_url() {
+        return poster_image_url;
+    }
+
+    public void setPoster_image_url(String poster_image_url) {
+        this.poster_image_url = poster_image_url;
     }
 }
