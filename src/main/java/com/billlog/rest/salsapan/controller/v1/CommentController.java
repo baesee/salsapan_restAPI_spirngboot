@@ -1,20 +1,21 @@
 package com.billlog.rest.salsapan.controller.v1;
 
-import com.billlog.rest.salsapan.advice.exception.CUserDeleteException;
-import com.billlog.rest.salsapan.advice.exception.CUserModifyException;
-import com.billlog.rest.salsapan.advice.exception.CUserNotFoundException;
+import com.billlog.rest.salsapan.controller.FcmPushUtils;
 import com.billlog.rest.salsapan.mapper.CommentMapper;
-import com.billlog.rest.salsapan.model.SalsaCommunity;
-import com.billlog.rest.salsapan.model.SalsaUser;
+import com.billlog.rest.salsapan.mapper.DeviceMapper;
 import com.billlog.rest.salsapan.model.comment.SalsaComment;
 import com.billlog.rest.salsapan.model.response.CommonResult;
 import com.billlog.rest.salsapan.model.response.ListResult;
+import com.billlog.rest.salsapan.service.AndroidFCMPushNotificationsService;
 import com.billlog.rest.salsapan.service.ResponseService;
-import com.billlog.rest.salsapan.util.CustomUtils;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 @Api(tags = {"9-3. Comment"})
 @RestController
@@ -23,12 +24,17 @@ public class CommentController {
 
     @Autowired
     private CommentMapper commentMapper;
+    @Autowired
+    private DeviceMapper deviceMapper;
 
     @Autowired
     private final ResponseService responseService; // 결과를 처리할 Service
+    @Autowired
+    private final AndroidFCMPushNotificationsService androidFCMPushNotificationsService;
 
-    public CommentController(ResponseService responseService) {
+    public CommentController(ResponseService responseService, AndroidFCMPushNotificationsService androidFCMPushNotificationsService) {
         this.responseService = responseService;
+        this.androidFCMPushNotificationsService = androidFCMPushNotificationsService;
     }
 
     //해당 글에 등록된 댓글 목록 가져오기.
@@ -61,6 +67,22 @@ public class CommentController {
         result = commentMapper.createComment(salsaComment);
 
         if (result == 1) {
+
+            // 커뮤니티 게시글 작성자에게 댓글이 등록되었다고 FCM push를 전송한다.
+            // FCM 코멘트 IDX 값을 이용하여 글 커뮤니티 글 작성자의 user_idx를 찾아내 토큰 값을 가져온다.
+            String token = deviceMapper.findMsgReciverUserByCommentIdx(salsaComment.getComment_idx());
+
+
+            Map<String, Object> fcm = new HashMap<>();
+
+            fcm.put("token", token);
+            fcm.put("title", "SALSAPAN");
+            fcm.put("body", "add comment ! 작성한 게시글에 댓글이 등록되었습니다.");
+
+            HttpEntity<String> request = FcmPushUtils.createFcmMessageTargetToWriter(fcm);
+            CompletableFuture<String> pushNotification = androidFCMPushNotificationsService.send(request);
+            CompletableFuture.allOf(pushNotification).join();
+
             return responseService.getSuccessResult();
         } else {
             return responseService.getFailResult(99010, "댓글 등록 작업중 에러가 발생하였습니다.");

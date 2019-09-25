@@ -30,7 +30,6 @@
         UPDATE salsa_notice
         SET
             title = #{title}
-            , writer_user_idx = #{writer_user_idx}
             <if test="content != null">
                 , content = #{content}
             </if>

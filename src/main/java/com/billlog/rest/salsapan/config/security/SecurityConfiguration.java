@@ -38,8 +38,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/web/**","/css/**", "/js/**", "/vendors/**", "/node_modules/**", "/images/**").permitAll() // 정적파일 및 웹 관련은 누구나 접근가능 (아직은)
                 .antMatchers("/*/signin", "/*/signin/**", "/*/signup", "/*/signup/**", "/*/social/**").permitAll() // 가입 및 인증 주소는 누구나 접근가능
                 .antMatchers("/*/common/**").permitAll() // 공통 관련은 누구나 접근가능
+                .antMatchers("/v1/fcm/device").permitAll() // 공통 관련은 누구나 접근가능
                 .antMatchers("/v1/file/downloadFile/**").permitAll() // 이미지 내려받기는 누구나 접근가능
                 .antMatchers(HttpMethod.GET, "/exception/**", "helloworld/**").permitAll() // hellowworld로 시작하는 GET요청 리소스는 누구나 접근가능
+                .antMatchers("/v1/fcm/sendAll").hasRole("ADMIN") // 공통 관련은 누구나 접근가능
                 .antMatchers("/v1/manage/**").hasRole("ADMIN") // 공통 관련은 누구나 접근가능
                 .anyRequest().authenticated() // 인증된 사용자는 접근해라.
                 .and()

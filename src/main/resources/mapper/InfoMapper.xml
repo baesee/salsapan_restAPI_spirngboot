@@ -161,9 +161,7 @@
                 , location = #{location}
             </if>
             <if test="start_date != null">
-                , start_date = DATE_FORMAT(#{start_date},'%Y-%m-%d')
---                 , start_date = #{start_date}
-
+                , start_date = #{start_date}
             </if>
             <if test="end_date != null">
                 , end_date = #{end_date}
@@ -202,7 +200,6 @@
                 , fullpass = #{fullpass}
             </if>
         WHERE info_idx = #{info_idx}
-
     </update>
 
 </mapper>

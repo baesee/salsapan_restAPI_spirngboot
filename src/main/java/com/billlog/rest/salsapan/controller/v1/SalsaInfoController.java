@@ -4,23 +4,30 @@ import com.billlog.rest.salsapan.advice.exception.CCommonDeleteFailedException;
 import com.billlog.rest.salsapan.advice.exception.CCommonUpdateFailedException;
 import com.billlog.rest.salsapan.advice.exception.CCommonWriteFailedException;
 import com.billlog.rest.salsapan.advice.exception.CInfoArticleNotFoundException;
+import com.billlog.rest.salsapan.controller.FcmPushUtils;
 import com.billlog.rest.salsapan.controller.common.FileUploadController;
+import com.billlog.rest.salsapan.mapper.DeviceMapper;
 import com.billlog.rest.salsapan.mapper.FileMapper;
 import com.billlog.rest.salsapan.mapper.InfoMapper;
+import com.billlog.rest.salsapan.mapper.UserMapper;
 import com.billlog.rest.salsapan.model.SalsaInfo;
-import com.billlog.rest.salsapan.model.file.FileUploadResponse;
 import com.billlog.rest.salsapan.model.response.CommonResult;
 import com.billlog.rest.salsapan.model.response.ListResult;
 import com.billlog.rest.salsapan.model.response.SingleResult;
+import com.billlog.rest.salsapan.service.AndroidFCMPushNotificationsService;
 import com.billlog.rest.salsapan.service.ResponseService;
 import com.billlog.rest.salsapan.util.CustomUtils;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @Api(tags = {"3. SalsaInfo"})
 @RestController
@@ -32,11 +39,16 @@ public class SalsaInfoController {
     @Autowired
     private FileMapper fileMapper;
     @Autowired
+    private DeviceMapper deviceMapper;
+    @Autowired
     private final ResponseService responseService; // 결과를 처리할 Service
+    @Autowired
+    private final AndroidFCMPushNotificationsService androidFCMPushNotificationsService;
     private final FileUploadController fileUploadController; // 결과를 처리할 Service
 
-    public SalsaInfoController(ResponseService responseService, FileUploadController fileUploadController) {
+    public SalsaInfoController(ResponseService responseService, AndroidFCMPushNotificationsService androidFCMPushNotificationsService, FileUploadController fileUploadController) {
         this.responseService = responseService;
+        this.androidFCMPushNotificationsService = androidFCMPushNotificationsService;
         this.fileUploadController = fileUploadController;
     }
 
@@ -106,11 +118,34 @@ public class SalsaInfoController {
 
                 fileUploadController.uploadMultipleFiles(files, dir, file_manage_id);
             }
-
             result = infoMapper.createInfoArticle(salsaInfo);
         }
 
         if(result == 1) {
+
+            // 인포 정보가 등록 되고 그 글과 같은 도시 지역을 관심지역으로 설정한 사용자에게 푸쉬를 날린다.
+            String articleType = "";
+            if("P".equals(salsaInfo.getType())){
+                articleType = "파티";
+            }else if("C".equals(salsaInfo.getType())){
+                articleType = "강습";
+            }else if("F".equals(salsaInfo.getType())){
+                articleType = "페스티벌";
+            }else{
+                articleType = "";
+            }
+            //등록된 도시 번호로 동일한 회원 ID값을 가져온다.
+            List<String> tokenList = deviceMapper.findMsgReciverUsersByCity(salsaInfo.getCity());
+
+            Map<String, Object> fcm = new HashMap<>();
+            fcm.put("title", "관심지역의 게시글이 등록되었습니다.");
+            fcm.put("body", "관심 지역의 " + articleType + " 정보가 등록되었습니다. \n 확인 후 " + articleType + " 함께하세요.");
+            fcm.put("tokens",tokenList);
+
+            HttpEntity<String> request = FcmPushUtils.createFcmMessageTargetToCity(fcm);
+            CompletableFuture<String> pushNotification = androidFCMPushNotificationsService.send(request);
+            CompletableFuture.allOf(pushNotification).join();
+
             return responseService.getSuccessResult();
         }else{
             throw new CCommonWriteFailedException();

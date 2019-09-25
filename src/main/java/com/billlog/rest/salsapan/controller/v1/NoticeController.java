@@ -4,16 +4,26 @@ import com.billlog.rest.salsapan.advice.exception.CCommonDeleteFailedException;
 import com.billlog.rest.salsapan.advice.exception.CCommonUpdateFailedException;
 import com.billlog.rest.salsapan.advice.exception.CCommonWriteFailedException;
 import com.billlog.rest.salsapan.advice.exception.CInfoArticleNotFoundException;
+import com.billlog.rest.salsapan.controller.FcmPushUtils;
 import com.billlog.rest.salsapan.mapper.NoticeMapper;
 import com.billlog.rest.salsapan.model.SalsaNotice;
 import com.billlog.rest.salsapan.model.response.CommonResult;
 import com.billlog.rest.salsapan.model.response.ListResult;
 import com.billlog.rest.salsapan.model.response.SingleResult;
+import com.billlog.rest.salsapan.service.AndroidFCMPushNotificationsService;
 import com.billlog.rest.salsapan.service.ResponseService;
 import com.billlog.rest.salsapan.util.CustomUtils;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @Api(tags = {"8. Notice"})
 @RestController
@@ -24,9 +34,12 @@ public class NoticeController {
     private NoticeMapper noticeMapper;
     @Autowired
     private final ResponseService responseService; // 결과를 처리할 Service
+    @Autowired
+    private final AndroidFCMPushNotificationsService androidFCMPushNotificationsService;
 
-    public NoticeController(ResponseService responseService) {
+    public NoticeController(ResponseService responseService, AndroidFCMPushNotificationsService androidFCMPushNotificationsService) {
         this.responseService = responseService;
+        this.androidFCMPushNotificationsService = androidFCMPushNotificationsService;
     }
 
 
@@ -76,7 +89,14 @@ public class NoticeController {
         int result = noticeMapper.createNoticeArticle(salsaNotice);
 
         if(result == 1) {
+
+            // 공지사항이 등록 되면 전체 푸쉬메시지를 날린다.
+            HttpEntity<String> request = FcmPushUtils.createFcmAllMessage("[SALSAPAN] 공지사항이 등록되었습니다.", "공지사항 확인 후 서비스를 이용해주시기 바랍니다.");
+            CompletableFuture<String> pushNotification = androidFCMPushNotificationsService.send(request);
+            CompletableFuture.allOf(pushNotification).join();
+
             return responseService.getSuccessResult();
+
         }else{
             throw new CCommonWriteFailedException();
         }

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.billlog.rest.salsapan.mapper.DeviceMapper">
+
+    <!-- 회원의 디바이스 토큰 값을 넣는다. 해당 회원으로 또 다른 토큰값이 들어올 경우 업데이트 한다. -->
+    <insert id="updateDeviceInfo" parameterType="SalsaDevice">
+        INSERT INTO salsa_device(
+                user_id
+                , device_token
+                , device_name
+                , device_brand
+                , device_product
+                , sdk_version
+                , os_version
+                , regdate
+                )
+        VALUES (
+        		#{user_id}
+        		, #{device_token}
+        		, #{device_name}
+        		, #{device_brand}
+        		, #{device_product}
+        		, #{sdk_version}
+        		, #{os_version}
+                , now()
+                )
+        ON DUPLICATE KEY UPDATE
+			 device_token = #{device_token}
+			, device_name = #{device_name}
+			, device_brand = #{device_brand}
+			, device_product = #{device_product}
+			, sdk_version = #{sdk_version}
+			, os_version = #{os_version}
+			, regdate = now()
+    </insert>
+
+</mapper>

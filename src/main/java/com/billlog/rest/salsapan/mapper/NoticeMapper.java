@@ -12,7 +12,7 @@ import java.util.List;
 public interface NoticeMapper {
 
     //공지사항 게시글 총 목록 가져오기
-    @Select("SELECT * FROM salsa_notice ORDER BY notice_idx DESC LIMIT #{page} , #{count}")
+    @Select("SELECT * FROM salsa_notice WHERE use_yn = 'Y' ORDER BY notice_idx DESC LIMIT #{page} , #{count}")
     List<SalsaNotice> getNoticeArticleAll(@Param("page") int page, @Param("count") int count);
 
     //공지사항 인덱스로 공지사항 게시판의 특정글 가져오기
