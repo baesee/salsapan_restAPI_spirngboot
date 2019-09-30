@@ -83,8 +83,20 @@ public class UserController {
     })
     @ApiOperation(value = "회원 전체 목록 조회", notes = "모든 회원을 조회한다")
     @GetMapping(value = "/users")
-    public ListResult<SalsaUser> findAllUser() {
-        return responseService.getListResult(userMapper.getAll());
+    public ListResult<SalsaUser> findAllUser(@ApiParam(value = "타입")@RequestParam(value="type", required=false) String type,
+                                             @ApiParam(value = "타입 값")@RequestParam(value="type_value", required=false) String type_value) {
+
+        /**
+         * type = 조회하고자 하는 타입 ex : P - 프리미엄 상태
+         * type_value = 조회하고자 하는 타입 값 : P ( D : 기본값, W : 대기중, S : 완료, F : 반려(실패) )
+         */
+
+        //타입의 값이 프리미엄(P)의 경우에만 값을 셋팅 그 외에는 공백값을 넣어 전체유저가 조회되도록 한다.
+        if(!"P".equals(type)){
+            type = "";
+        }
+
+        return responseService.getListResult(userMapper.getAll(type, type_value));
     }
 
     //유효한 Jwt토큰을 설정해야만 User 리소스를 사용할 수 있도록 Header에 X-AUTH-TOKEN을 인자로 받도록 선언합니다.
@@ -110,9 +122,9 @@ public class UserController {
     @ApiOperation(value = "회원 정보 수정", notes = "개인정보를 수정한다.")
     @PutMapping("/user/{user_idx}")
     public CommonResult modifyUserById(@ApiParam(value = "회원IDX", required = true)@PathVariable int user_idx,
+                                       @RequestPart(value="file", required = false) MultipartFile file,
                                        @ApiParam(value = "수정할 회원정보 Object", required = true) SalsaUser user,
-                                       @ApiParam(value = "저장 디렉토리 명", required = true) String dir,
-                                       @RequestPart(value="file", required = false) MultipartFile file) {
+                                       @ApiParam(value = "저장 디렉토리 명", required = true) String dir) {
 
         //유저 인덱스 번호(유저 고유정보)가 없을 경우 유저를 찾을수 없다는 에러 발생
         if("".equals(user.getUser_idx())){
@@ -227,6 +239,25 @@ public class UserController {
         }
     }
 
+    // 프리미엄 사용자 전환
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
+    })
+    @ApiOperation(value = "유저 프리미엄 상태 전환", notes = "프리미엄 신청을 한 유저의 프리미엄 상태를 대기중으로 변경 ")
+    @PostMapping(value = "/user/premium/{user_idx}")
+    public CommonResult premiumChanging(@ApiParam(value = "회원IDX", required = true)@PathVariable int user_idx){
+
+        SalsaUser user = userMapper.getUserById(user_idx);
+
+        if(CustomUtils.isEmpty(user)){
+            throw new CUserNotFoundException();
+        } else {
+            //1. 사용자의 프리미엄 전환 상태값을 변경
+            userMapper.modifyPremiumState(user.getUser_idx(), "W"); // 최초 신청시에는 무조건 'W : 처리 대기중' 상태로 전환
+
+            return responseService.getSuccessResult();
+        }
+    }
 
     /**
      *  이메일 인증 관련 시작

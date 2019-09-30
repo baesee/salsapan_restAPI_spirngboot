@@ -17,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -95,17 +97,24 @@ public class FCMDeviceController {
     })
     @ApiOperation(value = "2. 전체 푸쉬 전송", notes = "전체 사용자에게 푸쉬메시지를 전송한다.")
     @PostMapping(value = "/sendAll")
-    public @ResponseBody ResponseEntity<String> send(String title, String message) throws JSONException{
+    public @ResponseBody ResponseEntity<String> send(@ApiParam(value = "푸시 타이틀", required = true) @RequestParam String title,
+                                                     @ApiParam(value = "푸시 본문내용", required = true) @RequestParam String message) throws JSONException, UnsupportedEncodingException {
+
+        System.err.println(" -------------------- 전체 푸쉬 전송 --------------------");
 
         JSONObject body = new JSONObject();
 
         body.put("to", "/topics/salsapan"); //단일 메세지의 경우 to 사용
 
+        title   = URLEncoder.encode(title  ,"UTF-8"); // 한글깨짐으로 URL인코딩해서 보냄
+        message = URLEncoder.encode(message,"UTF-8");
+
         JSONObject notification = new JSONObject();
         notification.put("title", title);
         notification.put("body", message);
 
-        body.put("notification", notification);
+//        body.put("notification", notification);
+        body.put("data", notification);
 
         HttpEntity<String> request = new HttpEntity<>(body.toString());
 

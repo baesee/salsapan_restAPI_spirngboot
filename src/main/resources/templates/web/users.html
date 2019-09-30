@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+        <title>Salsapan Admin - users </title>
+        <!-- Main styles for this application-->
+        <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+
+        <script th:inline="javascript">
+            function onClickSuccess(){
+                var checkList = [];
+
+                $("input[name=checks]:checked").each(function() {
+                    checkList.push($(this).val());
+                })
+                var datas = { "type" : "S", "user_idxs": checkList };
+
+                //ajax 호출
+                $.ajax({
+                    url: "/web/ajax/user/premium",
+                    type: "post",
+                    data: datas,
+                    success: function (retVal) {
+                        if (retVal.code == "OK") {
+                            alert(retVal.message);
+                        } else {
+                            alert(retVal.message);
+                        }
+                        location.reload();
+                    },
+                    error: function () {
+                        console.log("처리 실패");
+                    }
+                });
+            }
+
+            function onClickFail(){
+                var checkList = [];
+
+                $("input[name=checks]:checked").each(function() {
+                    checkList.push($(this).val());
+                })
+                var datas = { "type" : "F", "user_idxs": checkList };
+
+                //ajax 호출
+                $.ajax({
+                    url: "/web/ajax/user/premium",
+                    type: "post",
+                    data: datas,
+                    success: function (retVal) {
+                        if (retVal.code == "OK") {
+                            alert(retVal.message);
+                        } else {
+                            alert(retVal.message);
+                        }
+                        location.reload();
+                    },
+                    error: function () {
+                        console.log("처리 실패");
+                    }
+                });
+            }
+
+        </script>
+    </head>
+    <body>
+        <table border="1">
+            <thead>
+            <tr>
+                <th> ID </th>
+                <th> 이름 </th>
+                <th> 성별 </th>
+                <th> 활동지역 </th>
+                <th> 팀명 </th>
+                <th> E-mail </th>
+                <th> E-mail 인증여부 </th>
+                <th> 권한 </th>
+                <th> 프리미엄 신청상태 </th>
+                <th> 선택 </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${users.empty}" style="text-align: center">
+                <td colspan="10"> 프리미엄 회원으로 신청한 유저가 없습니다.</td>
+            </tr>
+            <tr th:each="users : ${users}">
+                <td><span th:text="${users.user_id}"> ID </span></td>
+                <td><span th:text="${users.user_name}"> NAME </span></td>
+                <td th:switch="${users.user_gender}" >
+                    <span th:case="F"> 여자</span>
+                    <span th:case="M"> 남자</span>
+                </td>
+                <td><span th:text="${users.user_city_nm}"> CITY </span></td>
+                <td><span th:text="${users.user_team}"> TEAM </span></td>
+                <td><span th:text="${users.user_email}"> E-Mail </span></td>
+                <td th:switch="${users.user_auth}" > 인증 안함
+                    <span th:case="Y"> 인증 완료 </span>
+                </td>
+                <td th:switch="${users.user_role}" >
+                    <span th:case="1"> 관리자 </span>
+                    <span th:case="2"> 프리미엄 사용자 </span>
+                    <span th:case="3"> 일반 사용자 </span>
+                </td>
+                <td th:switch="${users.user_premium_state}" >
+                    <span th:case="W"> 처리 대기 중 </span>
+                    <span th:case="S"> 처리 완료 </span>
+                    <span th:case="F"> 반려 처리 완료 </span>
+                    <span th:case="D"> 신청하지 않음 </span>
+                </td>
+                <td align="center">
+                    <input type="checkbox" name="checks" th:value="${users.user_idx}"/>
+                </td>
+            </tr>
+            <tr align="right" >
+                <td colspan = "10" height="50">
+                    <input type="button" onclick="onClickSuccess()" value="승인" style="margin-right: 20px; width: 90px; height: 30px; background: mediumblue; font-size: 16px; font-weight:bold; color: white;"/>
+                    <input type="button" onclick="onClickFail()" value="반려" style="margin-right: 30px; width: 90px; height: 30px; background: tomato; font-size: 16px; font-weight:bold; color: white;"/>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </body>
+</html>
+

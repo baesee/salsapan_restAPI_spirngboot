@@ -38,7 +38,14 @@ public class FcmPushUtils {
         notification.put("title", fcm.get("title"));
         notification.put("body", fcm.get("body"));
 
-        body.put("notification", notification);
+        /**
+         * "notification" 으로 보내면 안드로이드 백그라운드 상태에서만 onMessageReceived() 를 타고
+         * "data" 로 보내면 포그라운드, 백그라운드 모두 onMessageReceived() 를 탄다.
+         * 한글 깨짐으로 인해 onMessageReceived()에서 디코딩을 하기위해 "data"로 보낸다.
+         */
+
+//        body.put("notification", notification);
+        body.put("data", notification);
 
         HttpEntity<String> request = new HttpEntity<>(body.toString());
 
@@ -70,7 +77,8 @@ public class FcmPushUtils {
         JSONObject notification = new JSONObject();
         notification.put("title", fcm.get("title"));
         notification.put("body", fcm.get("body"));
-        body.put("notification", notification);
+//        body.put("notification", notification);
+        body.put("data", notification);
 
         HttpEntity<String> request = new HttpEntity<>(body.toString());
 
@@ -90,7 +98,8 @@ public class FcmPushUtils {
         notification.put("title", fcm.get("title"));
         notification.put("body", fcm.get("body"));
 
-        body.put("notification", notification);
+//        body.put("notification", notification);
+        body.put("data", notification);
 
         HttpEntity<String> request = new HttpEntity<>(body.toString());
 

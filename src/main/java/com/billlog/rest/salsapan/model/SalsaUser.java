@@ -34,6 +34,9 @@ public class SalsaUser implements UserDetails {
     //카카오 연동을 위해서 회원의 서비스 제공자를 알기위해 provider필드 추가.
     private String provider;
 
+    //프리미엄 사용자 전환 상태( D: 기본, W : 대기중, S : 완료 )
+    private String user_premium_state;
+
     public int getUser_idx() {
         return user_idx;
     }
@@ -213,6 +216,14 @@ public class SalsaUser implements UserDetails {
 
     public void setImage_url(String image_url) {
         this.image_url = image_url;
+    }
+
+    public String getUser_premium_state() {
+        return user_premium_state;
+    }
+
+    public void setUser_premium_state(String user_premium_state) {
+        this.user_premium_state = user_premium_state;
     }
 
     @Override

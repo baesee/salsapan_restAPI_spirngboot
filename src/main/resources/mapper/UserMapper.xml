@@ -4,6 +4,26 @@
 <!-- 네임스페이스를 Mapper.java 와 동일하게 해놓으면 Mapper.java의 메소드명과 동일하게 호출이 가능하다. -->
 <mapper namespace="com.billlog.rest.salsapan.mapper.UserMapper">
 
+    <!-- 타입별 전체 사용자 유저 목록 가져오기 -->
+    <select id="getAll" parameterType="java.lang.String" resultType="SalsaUser">
+        SELECT
+            *,
+            ( SELECT role FROM salsa_role WHERE role_idx = user_role ) AS user_role_nm,
+            ( SELECT city_name FROM salsa_city WHERE city_idx = user_city ) AS user_city_nm,
+            ( SELECT file_download_uri FROM salsa_file WHERE file_idx = att_file_id ) AS image_url
+        FROM
+            salsa_user
+        WHERE
+            user_yn = 'Y'
+            <if test="type != null and type != '' and type_value != null and type_value != ''">
+                <if test='type.equals("P")'>
+                    AND user_premium_state = #{type_value}
+                    AND user_auth = 'Y'
+                </if>
+            </if>
+
+    </select>
+
     <!-- 정보제공성 게시글 등록 -->
     <insert id="createUser" parameterType="SalsaUser">
         INSERT INTO salsa_user(
@@ -75,7 +95,7 @@
             <if test="user_auth != null">
                 , user_auth = #{user_auth}
             </if>
-            <if test="att_file_id != null">
+            <if test="att_file_id != null and att_file_id != 0">
                 , att_file_id = #{att_file_id}
             </if>
 
@@ -83,4 +103,16 @@
         WHERE user_idx = #{user_idx}
     </update>
 
+
+    <!-- ======================================== -->
+    <!-- =============== WEB AJAX =============== -->
+    <!-- ======================================== -->
+    <update id="modifyPStateAndRole" parameterType="java.lang.String">
+        UPDATE salsa_user
+        SET user_premium_state = #{type}
+        <if test='type.equals("S")'>
+            , user_role = 2
+        </if>
+         WHERE user_idx = #{user_idx}
+    </update>
 </mapper>

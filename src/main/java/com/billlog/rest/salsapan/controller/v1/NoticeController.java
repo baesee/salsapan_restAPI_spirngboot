@@ -20,6 +20,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -84,14 +86,20 @@ public class NoticeController {
     })
     @ApiOperation(value = "공지사항 글 등록", notes = "공지사항 글 작성한다.")
     @PostMapping("/notice")
-    public CommonResult createNoticeArticle(SalsaNotice salsaNotice ){
+    public CommonResult createNoticeArticle(SalsaNotice salsaNotice ) throws UnsupportedEncodingException {
 
         int result = noticeMapper.createNoticeArticle(salsaNotice);
 
         if(result == 1) {
 
+            String title = "[SALSAPAN] 공지사항이 등록되었습니다.";
+            String content = "공지사항 확인 후 서비스를 이용해주시기 바랍니다.";
+
+            title   = URLEncoder.encode(title  ,"UTF-8");
+            content = URLEncoder.encode(content,"UTF-8");
+
             // 공지사항이 등록 되면 전체 푸쉬메시지를 날린다.
-            HttpEntity<String> request = FcmPushUtils.createFcmAllMessage("[SALSAPAN] 공지사항이 등록되었습니다.", "공지사항 확인 후 서비스를 이용해주시기 바랍니다.");
+            HttpEntity<String> request = FcmPushUtils.createFcmAllMessage(title, content);
             CompletableFuture<String> pushNotification = androidFCMPushNotificationsService.send(request);
             CompletableFuture.allOf(pushNotification).join();
 

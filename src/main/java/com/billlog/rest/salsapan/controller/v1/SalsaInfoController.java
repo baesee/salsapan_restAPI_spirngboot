@@ -23,6 +23,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -104,7 +106,7 @@ public class SalsaInfoController {
 
     public CommonResult createInfoArticle(@ApiParam(value = "정보게시글 작성 Object", required = true) SalsaInfo salsaInfo,
                                           @RequestPart(value="files", required = false) MultipartFile[] files,
-                                          @ApiParam(value = "저장 디렉토리 명", required = true) String dir){
+                                          @ApiParam(value = "저장 디렉토리 명", required = true) String dir) throws UnsupportedEncodingException {
 
         int result = 0;
 
@@ -137,14 +139,22 @@ public class SalsaInfoController {
             //등록된 도시 번호로 동일한 회원 ID값을 가져온다.
             List<String> tokenList = deviceMapper.findMsgReciverUsersByCity(salsaInfo.getCity());
 
-            Map<String, Object> fcm = new HashMap<>();
-            fcm.put("title", "관심지역의 게시글이 등록되었습니다.");
-            fcm.put("body", "관심 지역의 " + articleType + " 정보가 등록되었습니다. \n 확인 후 " + articleType + " 함께하세요.");
-            fcm.put("tokens",tokenList);
+            if( tokenList.size() > 0 ) {
+                String title = "SALSAPAN";
+                String content = "관심 지역의 " + articleType + " 정보가 등록되었습니다. \n 확인 후 " + articleType + " 함께하세요.";
 
-            HttpEntity<String> request = FcmPushUtils.createFcmMessageTargetToCity(fcm);
-            CompletableFuture<String> pushNotification = androidFCMPushNotificationsService.send(request);
-            CompletableFuture.allOf(pushNotification).join();
+                title = URLEncoder.encode(title, "UTF-8");
+                content = URLEncoder.encode(content, "UTF-8");
+
+                Map<String, Object> fcm = new HashMap<>();
+                fcm.put("title", title);
+                fcm.put("body", content);
+                fcm.put("tokens", tokenList);
+
+                HttpEntity<String> request = FcmPushUtils.createFcmMessageTargetToCity(fcm);
+                CompletableFuture<String> pushNotification = androidFCMPushNotificationsService.send(request);
+                CompletableFuture.allOf(pushNotification).join();
+            }
 
             return responseService.getSuccessResult();
         }else{

@@ -15,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequestMapping("/web/admin")
@@ -42,6 +43,22 @@ public class AdminSignController {
         model.addAttribute("serverTime", new Date());
 
         mav.setViewName("web/login");
+        return mav;
+    }
+
+    /**
+     * 프리미엄 신청 사용자 목록을 보여줄 화면
+     */
+    @GetMapping(value = "/pusers/confirm")
+    public ModelAndView premiumWatingUsers(Model model, ModelAndView mav, @ModelAttribute SalsaUser salsaUser) {
+        System.err.println(" ================= WEB >> GET /pusers/confirm");
+        System.err.println(" ================= WEB >> premiumWatingUsers()");
+
+        List<SalsaUser> users = userMapper.getAll("P","W");
+
+        model.addAttribute("users", users);
+
+        mav.setViewName("web/users");
         return mav;
     }
 

@@ -1,8 +1,6 @@
 package com.billlog.rest.salsapan.mapper;
 
 import com.billlog.rest.salsapan.model.SalsaDevice;
-import com.billlog.rest.salsapan.model.file.FileUploadResponse;
-import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -32,4 +30,13 @@ public interface DeviceMapper {
             " LEFT JOIN salsa_device device ON user.user_id = device.user_id " +
             " WHERE community.comment_idx = #{comment_idx}")
     String findMsgReciverUserByCommentIdx(@Param("comment_idx") int comment_idx);
+
+    //유저 idx로 사용자의 name을 가져와 토큰값을 받은 뒤 권한이 변경된 사용자에게 푸쉬를 날린다.
+    @Select(" SELECT device.device_token " +
+            " FROM salsa_user user " +
+            " RIGHT JOIN salsa_device device " +
+            " ON user.user_id = device.user_id " +
+            " WHERE user.user_idx = #{user_idx}")
+    String findMsgReciverUsersByUserIdx(@Param("user_idx") String user_idx);
 }
+

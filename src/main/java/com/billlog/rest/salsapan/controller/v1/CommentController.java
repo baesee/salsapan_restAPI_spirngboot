@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -61,7 +63,7 @@ public class CommentController {
     })
     @ApiOperation(value = "댓글 등록", notes = "해당 글에 댓글 등록")
     @PostMapping("/comment")
-    public CommonResult createComment(@ApiParam(value = "댓글 정보 Object", required = true) SalsaComment salsaComment) {
+    public CommonResult createComment(@ApiParam(value = "댓글 정보 Object", required = true) SalsaComment salsaComment) throws UnsupportedEncodingException {
         int result = 0;
 
         result = commentMapper.createComment(salsaComment);
@@ -75,9 +77,15 @@ public class CommentController {
 
             Map<String, Object> fcm = new HashMap<>();
 
+            String title = "SALSAPAN";
+            String content = "작성한 게시글에 댓글이 등록되었습니다.";
+
+            title   = URLEncoder.encode(title  ,"UTF-8");
+            content = URLEncoder.encode(content,"UTF-8");
+
             fcm.put("token", token);
-            fcm.put("title", "SALSAPAN");
-            fcm.put("body", "add comment ! 작성한 게시글에 댓글이 등록되었습니다.");
+            fcm.put("title", title);
+            fcm.put("body", content);
 
             HttpEntity<String> request = FcmPushUtils.createFcmMessageTargetToWriter(fcm);
             CompletableFuture<String> pushNotification = androidFCMPushNotificationsService.send(request);
