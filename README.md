@@ -10,8 +10,7 @@
 * 개요
     * 안드로이드 ( Salsapan ) 커뮤니티 앱의 restAPI 서버입니다.
     * 라틴댄스를 즐기는 사용자들에게 각지에서 주최 또는 개강되는 파티/페스티벌과 강습의 일정을 공유 및 홍보 할수 있습니다.<br> 비매너 댄서정보를 공유하거나 본인에게 맞는 댄스 파트너를 찾을수 있습니다. 
-    
-    
+   
 * 개발환경
     * 개발언어 : JAVA 1.8
     * 프레임워크 : Spring Boot 2
@@ -29,6 +28,7 @@
     * Swagger를 이용한 API 문서화 자동
     * Mapper + Mybatis를 이용하여 데이터 접근
     * ThymeLeaf를 사용하여 관리자 페이지 개발
+    <img width="1416" alt="swagger_bil" src="https://user-images.githubusercontent.com/54093283/65946297-d2771380-e470-11e9-98d4-616cbfc0f28e.png">
     
 * Front-End 앱 기술사례    
     * Retrofit2를 이용하여 비동기,동기 통신 작업
@@ -37,6 +37,7 @@
     * Lottie를 이용하여 애니메이션 작업
     * FCM 디바이스 토큰 관리, 메시지 관리 수신 관리
     * SharedPreferences를 이용하여 FCM토큰 값 관리
+    <img width="1006" alt="pan_sc" src="https://user-images.githubusercontent.com/54093283/65946438-1702af00-e471-11e9-81c0-8609f1a6d53a.png">
     
 ## 2. 마무리
 > 작업을 진행하며 서버와 안드로이드 Multipart 통신이나, 각각의 라이브러리를 사용함에 있어 어려움이 있었습니다.
