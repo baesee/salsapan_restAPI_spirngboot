@@ -19,19 +19,19 @@
     * 프로젝트 관리도구 : Maven
     * IDEA : IntelliJ
     
-* Back-End 서버 기술사례
+* 서버 기술사례
     * JWT(JSON Web Token) + Spring security 을 이용한 로그인, 사용자 관리 보안,인증 구현
     * PasswordEncoder 패스워드 암, 복호화
     * KAKAO API를 이용한 소셜 로그인
     * SMTP를 이용한 패스워드 찾기, 이메일 본인인증
     * Google FCM(Firebase Cloud Messaging)를 이용한 PUSH
-    * Swagger를 이용한 API 문서화 자동
+    * Swagger를 이용한 API 문서화
     * Mapper + Mybatis를 이용하여 데이터 접근
     * ThymeLeaf를 사용하여 관리자 페이지 개발
     <img width="1416" alt="swagger_bil" src="https://user-images.githubusercontent.com/54093283/65946297-d2771380-e470-11e9-98d4-616cbfc0f28e.png">
     
-* Front-End 앱 기술사례    
-    * Retrofit2를 이용하여 비동기,동기 통신 작업
+* 안드로이드 기술사례    
+    * Retrofit2 + Gson을 이용하여 비동기,동기 통신 작업
     * KAKAO API를 이용한 로그인 
     * Picasso 라이브러리를 이용하여 이미지 처리
     * Lottie를 이용하여 애니메이션 작업
