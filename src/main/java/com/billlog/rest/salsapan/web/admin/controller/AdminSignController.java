@@ -38,7 +38,6 @@ public class AdminSignController {
      */
     @GetMapping(value = "/login")
     public ModelAndView adminLoginPage(Model model, ModelAndView mav, @ModelAttribute SalsaUser salsaUser) {
-        System.err.println(" ================= WEB >> GET login");
         model.addAttribute("errMsg", "11111111111111");
         model.addAttribute("serverTime", new Date());
 
@@ -51,8 +50,6 @@ public class AdminSignController {
      */
     @GetMapping(value = "/pusers/confirm")
     public ModelAndView premiumWatingUsers(Model model, ModelAndView mav, @ModelAttribute SalsaUser salsaUser) {
-        System.err.println(" ================= WEB >> GET /pusers/confirm");
-        System.err.println(" ================= WEB >> premiumWatingUsers()");
 
         List<SalsaUser> users = userMapper.getAll("P","W");
 
@@ -94,7 +91,6 @@ public class AdminSignController {
     public String adminLoginRegister(Model model, ModelAndView mav, @Valid SalsaUser salsaUser) {
 
         String url = "";
-        System.err.println(" ================= WEB >> POST login");
 
         SalsaUser user = userMapper.findByUsername(salsaUser.getUser_id());
 

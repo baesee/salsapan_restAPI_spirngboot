@@ -1,5 +1,6 @@
 package com.billlog.rest.salsapan.web.admin.controller;
 
+import com.billlog.rest.salsapan.controller.CustomUtils;
 import com.billlog.rest.salsapan.controller.FcmPushUtils;
 import com.billlog.rest.salsapan.mapper.DeviceMapper;
 import com.billlog.rest.salsapan.mapper.UserMapper;
@@ -46,7 +47,10 @@ public class AjaxController {
 
         for(int i = 0 ; i < user_idxs.length ; i++){
             userMapper.modifyPStateAndRole(user_idxs[i] , type);
-            tokenList.add(deviceMapper.findMsgReciverUsersByUserIdx(user_idxs[i]));
+            String deviceTokenByIdx = deviceMapper.findMsgReciverUsersByUserIdx(user_idxs[i]);
+            if(!CustomUtils.isEmpty(deviceTokenByIdx)) {
+                tokenList.add(deviceMapper.findMsgReciverUsersByUserIdx(user_idxs[i]));
+            }
         }
 
         Map<String, Object> retVal = new HashMap<>();
@@ -65,7 +69,7 @@ public class AjaxController {
         }
 
 
-        if( tokenList.size() > 0 ){
+        if( tokenList != null ){
             title   = URLEncoder.encode(title  ,"UTF-8");
             content = URLEncoder.encode(content,"UTF-8");
 
