@@ -69,7 +69,7 @@ public class AjaxController {
         }
 
 
-        if( tokenList != null ){
+        if( !CustomUtils.isEmpty(tokenList) ){
             title   = URLEncoder.encode(title  ,"UTF-8");
             content = URLEncoder.encode(content,"UTF-8");
 
