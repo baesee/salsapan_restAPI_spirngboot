@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,13 +44,14 @@ public class AjaxController {
 
         String title = "SALSAPAN";
         String content;
-        List<String> tokenList = null;
+        String deviceTokenByIdx;
+        List<String> tokenList = new ArrayList<>();
 
         for(int i = 0 ; i < user_idxs.length ; i++){
             userMapper.modifyPStateAndRole(user_idxs[i] , type);
-            String deviceTokenByIdx = deviceMapper.findMsgReciverUsersByUserIdx(user_idxs[i]);
+            deviceTokenByIdx = deviceMapper.findMsgReciverUsersByUserIdx(user_idxs[i]);
             if(!CustomUtils.isEmpty(deviceTokenByIdx)) {
-                tokenList.add(deviceMapper.findMsgReciverUsersByUserIdx(user_idxs[i]));
+                tokenList.add(deviceTokenByIdx);
             }
         }
 
@@ -59,15 +61,14 @@ public class AjaxController {
         retVal.put("code", "OK");
         if("S".equals(type)){
             retVal.put("message", "선택한 회원을 프리미엄 회원으로 변경 하였습니다.");
-            content = "회원님의 권한이 프리미엄 변경되었습니다.";
+            content = "회원님의 권한이 프리미엄 회원으로 변경되었습니다.";
         }else if("F".equals(type)){
             retVal.put("message", "선택한 회원의 프리미엄 신청을 철회 하였습니다.");
             content = "회원님의 프리미엄 신청이 철회되었습니다.";
         }else{
             retVal.put("message", "처리가 완료되었습니다.");
-            content = "회원님의 권한신청 처리가 완료되었습니다.";
+            content = "회원님의 프리미엄 신청 처리가 완료되었습니다.";
         }
-
 
         if( !CustomUtils.isEmpty(tokenList) ){
             title   = URLEncoder.encode(title  ,"UTF-8");
