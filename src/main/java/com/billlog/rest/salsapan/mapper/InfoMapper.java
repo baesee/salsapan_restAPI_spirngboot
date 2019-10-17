@@ -28,6 +28,8 @@ public interface InfoMapper {
     //인포 인덱스로 인포정보 특정 인포 글 가져오기
     @Select("SELECT info.* \n" +
             " , ( SELECT city_name FROM salsa_city WHERE city_idx = info.city ) as city_nm \n" +
+            " , ( SELECT user_name FROM salsa_user WHERE user_idx = info.writer_user_idx ) AS writer_user_name " +
+            " , ( SELECT file_download_uri FROM salsa_file WHERE file_idx = (SELECT att_file_id FROM salsa_user WHERE user_idx = info.writer_user_idx) ) AS writer_image_url " +
             "        FROM salsa_info info \n" +
             "        WHERE info_idx = #{info_idx}" +
             "        AND type = #{type}")
