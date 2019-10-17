@@ -15,6 +15,7 @@ public class SalsaCommunity {
     private int writer_user_idx;
     private String image_url; // 사용자 프로필 이미지 URL
     private int comment_idx; // 댓글관리 번호
+    private String writer_user_name;
 
     private SalsaComment salsaComment;
 
@@ -120,5 +121,13 @@ public class SalsaCommunity {
 
     public void setSalsaComment(SalsaComment salsaComment) {
         this.salsaComment = salsaComment;
+    }
+
+    public String getWriter_user_name() {
+        return writer_user_name;
+    }
+
+    public void setWriter_user_name(String writer_user_name) {
+        this.writer_user_name = writer_user_name;
     }
 }

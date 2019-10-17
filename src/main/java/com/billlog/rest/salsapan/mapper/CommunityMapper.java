@@ -17,6 +17,7 @@ public interface CommunityMapper {
                 ", hit_count" +
                 ", content" +
                 ", (select count(*) from salsa_comment where comment_idx = community.comment_idx AND use_yn = 'Y') as recommend_count " +
+                ", ( SELECT user_name FROM salsa_user WHERE user_idx = writer_user_idx ) AS writer_user_name " +
             " FROM salsa_community as community" +
             " WHERE type = #{type}" +
             " AND use_yn = 'Y' " +
@@ -26,7 +27,8 @@ public interface CommunityMapper {
 
     //커뮤니티 인덱스로 커뮤니티 게시판의 특정글 가져오기
     @Select("SELECT community.* " +
-            " ,( SELECT file_download_uri FROM salsa_file WHERE file_idx = user.att_file_id AND use_yn = 'Y') AS image_url " +
+            " , ( SELECT file_download_uri FROM salsa_file WHERE file_idx = user.att_file_id AND use_yn = 'Y') AS image_url " +
+            " , ( SELECT user_name FROM salsa_user WHERE user_idx = user.user_idx ) AS writer_user_name " +
             " FROM salsa_community community " +
             " JOIN salsa_user user" +
             " ON community.writer_user_idx = user.user_idx" +
